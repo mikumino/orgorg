@@ -16,6 +16,10 @@
             <form>
                 <div class="flex flex-col space-y-4">
                     <div class="flex flex-col space-y-2">
+                        <Label for="username">Username</Label>
+                        <Input type="text" id="username" />
+                    </div>
+                    <div class="flex flex-col space-y-2">
                         <Label for="email">Email</Label>
                         <Input type="email" id="email" />
                     </div>
