@@ -2,7 +2,7 @@
     import { Button } from "$lib/components/ui/button";
 </script>
 <div class="m-4">
-    <div class="w-full bg-slate-100 rounded-lg outline-slate-300 outline-1 outline drop-shadow-lg">
+    <div class="w-full bg-slate-100 rounded-lg outline-slate-300 outline-1 outline">
         <div class="flex flex-row justify-between items-center p-4">
             <a href="/" class="text-xl font-bold">OrgOrg</a>
             <div class="flex flex-row space-x-2">
