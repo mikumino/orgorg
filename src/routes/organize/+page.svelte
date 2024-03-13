@@ -1,7 +1,7 @@
 <script>
     import Input from "$lib/components/ui/input/input.svelte";
-import Label from "$lib/components/ui/label/label.svelte";
-import Navbar from "$lib/components/ui/navbar/navbar.svelte";
+    import Label from "$lib/components/ui/label/label.svelte";
+    import Navbar from "$lib/components/ui/navbar/navbar.svelte";
 </script>
 
 <div class="h-screen">
@@ -10,7 +10,7 @@ import Navbar from "$lib/components/ui/navbar/navbar.svelte";
         <div class="flex flex-col space-y-6 w-1/2">
             <h1 class="text-4xl font-bold">Organize meeting</h1>
             <form>
-                <div class="flex flex-col space-y-4 mb-4">
+                <div class="flex flex-col space-y-4 mb-4 w-96">
                     <Label for="meetingName">Meeting name</Label>
                     <Input type="text" id="meetingName"/>
                 </div>

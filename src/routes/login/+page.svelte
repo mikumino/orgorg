@@ -30,7 +30,7 @@
             </form>
         </Card.Content>
         <Card.Footer>
-            <p>Don't have an account? <a href="/register">Create one</a></p>
+            <p>Don't have an account? <a class="underline" href="/register">Create one</a></p>
         </Card.Footer>
     </Card.Root>
 </div>

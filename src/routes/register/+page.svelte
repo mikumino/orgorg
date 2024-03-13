@@ -38,7 +38,7 @@
             </form>
         </Card.Content>
         <Card.Footer>
-            <p>Already have an account? <a href="/login">Login</a></p>
+            <p>Already have an account? <a class="underline" href="/login">Login</a></p>
         </Card.Footer>
     </Card.Root>
 </div>
