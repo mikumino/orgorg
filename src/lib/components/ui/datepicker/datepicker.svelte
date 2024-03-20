@@ -49,11 +49,11 @@
      */
 </script>
 
-<div class="grid grid-cols-7 gap-4 text-center">
+<div class="grid grid-cols-7 gap-2 text-center">
     {#each displayedDateRange as date}
         <label for={date.toString()} class="cursor-pointer">
             <input class="hidden" type="checkbox" id={date.toString()} name={date.toString()} value={date} on:change={() => toggleDate(date)} />
-            <span class={`block p-4 rounded-lg select-none ${selectedDates.includes(date) ? 'bg-slate-300' : ''} `}>{date.getDate()}</span>
+            <span class={`block p-4 rounded-lg select-none ${selectedDates.includes(date) ? 'bg-slate-200' : ''} `}>{date.getDate()}</span>
         </label>
     {/each}
 </div>
