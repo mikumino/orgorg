@@ -52,6 +52,8 @@
 	 */
     function handleMouseDown (date) {
         console.log('mousedown', date);
+        firstRangeDate = null;
+        secondRangeDate = null;
         firstRangeDate = date;          // Starts range selection
         console.log('firstRangeDate', firstRangeDate)
     }
@@ -66,12 +68,14 @@
         }
         if (date == firstRangeDate) {
             toggleDate(date);
-        } else if (date > firstRangeDate) {
+        } else (date > firstRangeDate) {
             secondRangeDate = date;
             console.log(secondRangeDate);
             // Select all dates between firstRangeDate and secondRangeDate
             const range = displayedDateRange.filter(day => day >= firstRangeDate && day <= secondRangeDate);
-            selectedDates = selectedDates.concat(range);
+            for (let i = 0; i < range.length; i++) {
+                toggleDate(range[i]);
+            }
             console.log('selectedDates', selectedDates);
             firstRangeDate = null;
             secondRangeDate = null;
@@ -89,9 +93,8 @@
 
 <div class="grid grid-cols-7 gap-2 text-center">
     {#each displayedDateRange as date}
-        <label for={date.toString()} class="cursor-pointer">
-            <input class="" type="checkbox" id={date.toString()} name={date.toString()} value={date} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} />
-            <span class={`block p-4 rounded-lg select-none ${selectedDates.includes(date) ? 'bg-slate-200' : ''} `}>{date.getDate()}</span>
-        </label>
+        <button class={`p-2 rounded-sm hover:bg-slate-200 ${selectedDates.includes(date) ? 'bg-slate-300' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)}>
+            {date.getDate()}
+        </button>
     {/each}
 </div>
