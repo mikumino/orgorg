@@ -70,6 +70,7 @@
         if (date == null) {
             firstRangeDate = null;
             secondRangeDate = null;
+            displayedDateRangeSelection = [];
         } else if (firstRangeDate && date < firstRangeDate) {
             secondRangeDate = firstRangeDate;
             firstRangeDate = date;
@@ -135,6 +136,9 @@
 
 <svelte:document on:mouseup={() => handleMouseUp(null)} />
 
+<!-- FIXME: state is not synced so if month is changed, what is displayed and what is stored
+in the code are different. 
+-->
 <div class="flex justify-between mb-4">
     <button on:click={() => displayedDateRange = get30Days(addDays(displayedDateRange[0], -30))}>
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
