@@ -3,6 +3,10 @@
 	 * @type {Date[]}
 	 */
     let selectedDates = [];
+    /**
+     * @type {Date[]}
+     */
+    let displayedDateRangeSelection = []; 
 
     // These are used for when doing a click and drag to select a range of dates
     /**
@@ -79,6 +83,7 @@
             console.log('selectedDates', selectedDates);
             firstRangeDate = null;
             secondRangeDate = null;
+            displayedDateRangeSelection = [];
         } else if (firstRangeDate && date > firstRangeDate) {
             secondRangeDate = date;
             console.log(secondRangeDate);
@@ -90,8 +95,32 @@
             console.log('selectedDates', selectedDates);
             firstRangeDate = null;
             secondRangeDate = null;
+            displayedDateRangeSelection = [];
         } else {
+            firstRangeDate = null;
+            secondRangeDate = null;
+            displayedDateRangeSelection = [];
             toggleDate(date);
+        }
+    }
+
+    /**
+	 * @param {Date} date
+	 */
+    function handleMouseOver (date) {
+        if (firstRangeDate == null) {
+            return;
+        } else if (date < firstRangeDate) {
+            displayedDateRangeSelection = displayedDateRange.filter(day => day >= date && day <= firstRangeDate);
+            console.log(displayedDateRangeSelection);
+        } else if (date > firstRangeDate) {
+            displayedDateRangeSelection = displayedDateRange.filter(day => day >= firstRangeDate && day <= date);
+            console.log(displayedDateRangeSelection);
+        } else if (date == firstRangeDate) {
+            displayedDateRangeSelection = [date];
+            console.log(displayedDateRangeSelection);
+        } else {
+            return;
         }
     }
 
@@ -108,7 +137,7 @@
 
 <div class="grid grid-cols-7 gap-2 text-center">
     {#each displayedDateRange as date}
-        <button class={`p-2 rounded-sm hover:bg-slate-200 ${selectedDates.includes(date) ? 'bg-slate-300' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)}>
+        <button class={`p-2 rounded-sm hover:bg-slate-200 ${selectedDates.includes(date) ? 'bg-slate-300' : ''} ${displayedDateRangeSelection.includes(date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
             {date.getDate()}
         </button>
     {/each}
