@@ -135,9 +135,22 @@
 
 <svelte:document on:mouseup={() => handleMouseUp(null)} />
 
+<div class="flex justify-between mb-4">
+    <button on:click={() => displayedDateRange = get30Days(addDays(displayedDateRange[0], -30))}>
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+        </svg>
+    </button>
+    <h1>{displayedDateRange[0].toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h1>
+    <button on:click={() => displayedDateRange = get30Days(addDays(displayedDateRange[0], 30))}>
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
+        </svg>  
+    </button>
+</div>
 <div class="grid grid-cols-7 gap-2 text-center">
     {#each displayedDateRange as date}
-        <button class={`p-2 rounded-sm hover:bg-slate-200 ${selectedDates.includes(date) ? 'bg-slate-300' : ''} ${displayedDateRangeSelection.includes(date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
+        <button class={`p-2 rounded-full w-12 h-12 hover:bg-slate-200 transition-all ${selectedDates.includes(date) ? 'bg-slate-300' : ''} ${displayedDateRangeSelection.includes(date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
             {date.getDate()}
         </button>
     {/each}
