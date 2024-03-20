@@ -51,6 +51,9 @@
 
 <div class="grid grid-cols-7 gap-4 text-center">
     {#each displayedDateRange as date}
-        <button on:click={() => toggleDate(date)} class={`${selectedDates.includes(date) ? 'bg-slate-400' : ''}`}}>{date.getDate()}</button>
+        <label for={date.toString()} class="cursor-pointer">
+            <input class="hidden" type="checkbox" id={date.toString()} name={date.toString()} value={date} on:change={() => toggleDate(date)} />
+            <span class={`block p-4 rounded-lg select-none ${selectedDates.includes(date) ? 'bg-slate-300' : ''} `}>{date.getDate()}</span>
+        </label>
     {/each}
 </div>
