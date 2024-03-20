@@ -2,6 +2,7 @@
     import Input from "$lib/components/ui/input/input.svelte";
     import Label from "$lib/components/ui/label/label.svelte";
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
+    import DatePicker from "$lib/components/ui/datepicker/datepicker.svelte";
 </script>
 
 <style>
@@ -10,7 +11,7 @@
 
 <div class="h-screen">
     <Navbar />
-    <div class="flex mt-24 ml-24 h-full">
+    <div class="flex flex-row mt-24 ml-24 h-full">
         <div class="flex flex-col space-y-6 w-1/3">
             <h1 class="text-4xl font-bold">Organize meeting</h1>
             <form>
@@ -27,6 +28,9 @@
                     </div>
                 </div>
             </form>
+        </div>
+        <div>
+            <DatePicker />
         </div>
     </div>
 </div>
