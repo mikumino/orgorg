@@ -63,12 +63,23 @@
 	 */
     function handleMouseUp (date) {
         console.log('mouseup', date);
-        if (date == null || firstRangeDate == null) {
-            return;
-        }
-        if (date == firstRangeDate) {
-            toggleDate(date);
-        } else (date > firstRangeDate) {
+        if (date == null) {
+            firstRangeDate = null;
+            secondRangeDate = null;
+        } else if (firstRangeDate && date < firstRangeDate) {
+            secondRangeDate = firstRangeDate;
+            firstRangeDate = date;
+            console.log(firstRangeDate);
+            console.log(secondRangeDate);
+            // Select all dates between firstRangeDate and secondRangeDate
+            const range = displayedDateRange.filter(day => day >= firstRangeDate && day <= secondRangeDate);
+            for (let i = 0; i < range.length; i++) {
+                toggleDate(range[i]);
+            }
+            console.log('selectedDates', selectedDates);
+            firstRangeDate = null;
+            secondRangeDate = null;
+        } else if (firstRangeDate && date > firstRangeDate) {
             secondRangeDate = date;
             console.log(secondRangeDate);
             // Select all dates between firstRangeDate and secondRangeDate
@@ -79,6 +90,8 @@
             console.log('selectedDates', selectedDates);
             firstRangeDate = null;
             secondRangeDate = null;
+        } else {
+            toggleDate(date);
         }
     }
 
@@ -90,6 +103,8 @@
 	 */
     let displayedDateRange = get30Days(currentDate);
 </script>
+
+<svelte:document on:mouseup={() => handleMouseUp(null)} />
 
 <div class="grid grid-cols-7 gap-2 text-center">
     {#each displayedDateRange as date}
