@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@supabase/supabase-js": "^2.42.4",
 		"bits-ui": "^0.19.3",
 		"clsx": "^2.1.0",
 		"formsnap": "^0.5.1",
