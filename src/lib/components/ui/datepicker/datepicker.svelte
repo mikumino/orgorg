@@ -165,8 +165,11 @@ in the code are different.
     </button>
 </div>
 <div class="grid grid-cols-7 gap-2 text-center">
-    {#each displayedDateRange as date}
-        <button class={`p-2 rounded-full w-12 h-12 hover:bg-slate-200 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
+    {#each displayedDateRange as date, i}
+        <button class={`p-2 rounded-full group w-12 h-12 hover:bg-slate-200 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
+            <p class={`absolute group-hover:bg-slate-200 rounded-lg -translate-y-5 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`}>
+                {date.getDate() === 1 && i !== 0 ? date.toLocaleDateString('en-US', { month: 'short' }) : ''}
+            </p>
             {date.getDate()}
         </button>
     {/each}
