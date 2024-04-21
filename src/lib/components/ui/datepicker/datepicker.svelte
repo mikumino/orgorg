@@ -39,14 +39,24 @@
     }
 
     /**
+	 * @param {{getTime: () => number;}} date
+	 * @param {any[]} array
+     * Given an array of dates and a date, returns true if the date is in the array
+     * Uses timestamps to compare dates by value RAHHHH
+	 */
+    function hasDate(array, date) {
+        return array.find(arrayDate => arrayDate.getTime() === date.getTime());
+    }
+
+    /**
 	 * @param {any} date
 	 */
     function toggleDate (date) {
         const dateTimestamp = date.getTime();
-        if (selectedDates.findIndex(selectedDate => selectedDate.getTime() === dateTimestamp) === -1) {
-            selectedDates = [...selectedDates, date];
-        } else {
+        if (hasDate(selectedDates, date)) {
             selectedDates = selectedDates.filter(selectedDate => selectedDate.getTime() !== dateTimestamp);
+        } else {
+            selectedDates = [...selectedDates, date];
         }
         selectedDates = selectedDates;
         console.log(selectedDates);
@@ -156,7 +166,7 @@ in the code are different.
 </div>
 <div class="grid grid-cols-7 gap-2 text-center">
     {#each displayedDateRange as date}
-        <button class={`p-2 rounded-full w-12 h-12 hover:bg-slate-200 transition-all ${selectedDates.includes(date) ? 'bg-slate-300' : ''} ${displayedDateRangeSelection.includes(date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
+        <button class={`p-2 rounded-full w-12 h-12 hover:bg-slate-200 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
             {date.getDate()}
         </button>
     {/each}
