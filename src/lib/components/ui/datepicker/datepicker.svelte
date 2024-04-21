@@ -42,10 +42,11 @@
 	 * @param {any} date
 	 */
     function toggleDate (date) {
-        if (selectedDates.includes(date)) {
-            selectedDates = selectedDates.filter(day => day != date);
+        const dateTimestamp = date.getTime();
+        if (selectedDates.findIndex(selectedDate => selectedDate.getTime() === dateTimestamp) === -1) {
+            selectedDates = [...selectedDates, date];
         } else {
-            selectedDates.push(date);
+            selectedDates = selectedDates.filter(selectedDate => selectedDate.getTime() !== dateTimestamp);
         }
         selectedDates = selectedDates;
         console.log(selectedDates);
@@ -126,6 +127,7 @@
     }
 
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
     let startDate = currentDate;            // These are meant to be overridden as months are progressed by user
     let endDate = addDays(currentDate, 30);
     /**
