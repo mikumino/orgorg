@@ -59,25 +59,21 @@
             selectedDates = [...selectedDates, date];
         }
         selectedDates = selectedDates;
-        console.log(selectedDates);
     }
 
     /**
 	 * @param {null | Date} date
 	 */
     function handleMouseDown (date) {
-        console.log('mousedown', date);
         firstRangeDate = null;
         secondRangeDate = null;
         firstRangeDate = date;          // Starts range selection
-        console.log('firstRangeDate', firstRangeDate)
     }
 
     /**
 	 * @param {null | Date} date
 	 */
     function handleMouseUp (date) {
-        console.log('mouseup', date);
         if (date == null) {
             firstRangeDate = null;
             secondRangeDate = null;
@@ -85,26 +81,21 @@
         } else if (firstRangeDate && date < firstRangeDate) {
             secondRangeDate = firstRangeDate;
             firstRangeDate = date;
-            console.log(firstRangeDate);
-            console.log(secondRangeDate);
             // Select all dates between firstRangeDate and secondRangeDate
             const range = displayedDateRange.filter(day => day >= firstRangeDate && day <= secondRangeDate);
             for (let i = 0; i < range.length; i++) {
                 toggleDate(range[i]);
             }
-            console.log('selectedDates', selectedDates);
             firstRangeDate = null;
             secondRangeDate = null;
             displayedDateRangeSelection = [];
         } else if (firstRangeDate && date > firstRangeDate) {
             secondRangeDate = date;
-            console.log(secondRangeDate);
             // Select all dates between firstRangeDate and secondRangeDate
             const range = displayedDateRange.filter(day => day >= firstRangeDate && day <= secondRangeDate);
             for (let i = 0; i < range.length; i++) {
                 toggleDate(range[i]);
             }
-            console.log('selectedDates', selectedDates);
             firstRangeDate = null;
             secondRangeDate = null;
             displayedDateRangeSelection = [];
@@ -124,13 +115,10 @@
             return;
         } else if (date < firstRangeDate) {
             displayedDateRangeSelection = displayedDateRange.filter(day => day >= date && day <= firstRangeDate);
-            console.log(displayedDateRangeSelection);
         } else if (date > firstRangeDate) {
             displayedDateRangeSelection = displayedDateRange.filter(day => day >= firstRangeDate && day <= date);
-            console.log(displayedDateRangeSelection);
         } else if (date == firstRangeDate) {
             displayedDateRangeSelection = [date];
-            console.log(displayedDateRangeSelection);
         } else {
             return;
         }
