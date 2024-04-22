@@ -3,22 +3,27 @@
 	 * @type {Date[]}
 	 */
     let selectedDates = [];
+
     /**
+     * The range of dates that are currently being displayed, used to display the calendar
      * @type {Date[]}
      */
     let displayedDateRangeSelection = []; 
 
-    // These are used for when doing a click and drag to select a range of dates
     /**
+     * The first date in a range selection
      * @type {Date | null}
      */
     let firstRangeDate = null;
+    
     /**
+     * The second date in a range selection
      * @type {Date | null}
      */
     let secondRangeDate = null;
 	
     /**
+     * Adds days to a date, returns the "sum" date
 	 * @param {string | number | Date} date
 	 * @param {number} days
 	 */
@@ -28,6 +33,7 @@
         return result;
     }
     /**
+     * Gets the next 30 days from the given date
      * @param {string | number | Date} date
      */
     function get30Days (date) {
@@ -39,16 +45,18 @@
     }
 
     /**
-	 * @param {{getTime: () => number;}} date
-	 * @param {any[]} array
      * Given an array of dates and a date, returns true if the date is in the array
      * Uses timestamps to compare dates by value RAHHHH
+	 * @param {{getTime: () => number;}} date
+	 * @param {any[]} array
 	 */
     function hasDate(array, date) {
         return array.find(arrayDate => arrayDate.getTime() === date.getTime());
     }
 
     /**
+     * Toggles the date in the selectedDates array
+     * Checks if the selectedDates array already has the date, if it does, it removes it
 	 * @param {any} date
 	 */
     function toggleDate (date) {
@@ -62,6 +70,9 @@
     }
 
     /**
+     * When the mouse is pressed down on a date, this is called
+     * We use this to start the range selection
+     * First and second range date are used to store the range selection, cleared here as safety
 	 * @param {null | Date} date
 	 */
     function handleMouseDown (date) {
@@ -71,6 +82,11 @@
     }
 
     /**
+     * When the mouse is released, this is called
+     * If the date is null (we are not hovered over a date), we clear the range selection
+     * If the date is not null, we check if we are selecting a range of dates
+     * If we are, we select all dates between the first and second range date
+     * If we are not, we toggle the date, it is a single date selection
 	 * @param {null | Date} date
 	 */
     function handleMouseUp (date) {
@@ -108,6 +124,9 @@
     }
 
     /**
+     * When the mouse is hovered over a date, this is called
+     * This is how we handle the range selection highlighting
+     * Checks if we are mid-range selection, if we are, we highlight all dates between the first and hovered date
 	 * @param {Date} date
 	 */
     function handleMouseOver (date) {
@@ -126,19 +145,17 @@
 
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
-    let startDate = currentDate;            // These are meant to be overridden as months are progressed by user
-    let endDate = addDays(currentDate, 30);
+
     /**
+     * The range of dates that are displayed
 	 * @type {Date[]}
 	 */
     let displayedDateRange = get30Days(currentDate);
 </script>
 
+<!-- Handles mouseup on anything that's not a date -->
 <svelte:document on:mouseup={() => handleMouseUp(null)} />
 
-<!-- FIXME: state is not synced so if month is changed, what is displayed and what is stored
-in the code are different. 
--->
 <div class="flex justify-between mb-4">
     <button on:click={() => displayedDateRange = get30Days(addDays(displayedDateRange[0], -30))}>
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
