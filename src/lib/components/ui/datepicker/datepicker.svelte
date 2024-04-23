@@ -159,3 +159,5 @@ in the code are different.
         </button>
     {/each}
 </div>
+
+<Availability selectedDates={selectedDates} />
