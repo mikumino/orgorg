@@ -15,19 +15,13 @@
     
 
     const numPeriods = (endHour-startHour) * 2; // number of 30-minute periods in the given timeframe
-    let timeSlots = Array.from({length : numPeriods}, (_, index) => {
+    let timeSlots = Array.from({length : numPeriods}, (_, index) => { 
+        // put strings with the times into the array
         const hour = Math.floor(index/2) + startHour;
         const minute = index % 2 === 0 ? '00' : '30';
         return hour.toString().padStart(2, '0') + ":" + minute;
-    })
-    
-    
-    /*const periods = Array.from({ length: numPeriods }, (i) => {
-        const hour = Math.floor(i/2);
-        const minute = i % 2 === 0 ? '00' : '30';
-        return hour.toString().padStart(2, '0') + ':' + minute;
-    }); */ 
-    console.log(timeSlots.length);
+    });
+
 </script>
 
 <style>
@@ -54,13 +48,13 @@
     }
 </style>
 
-<div class="flex flex-row h-96 w-full justify-center">
+<div class="flex flex-row w-96">
     <div class="flex flex-col gap-y-2">
         <div class="flex flex-row px-4 border-b-2">
             &nbsp;
         </div>
         {#each timeSlots as period, index}
-            <div class="flex flex-row px-4 {index %2 != 0 ? 'border-b-2' : ''}">
+            <div class="flex flex-row px-4 {index %2 != 0 ? 'border-b-2 pb-1' : ''}">
                 {period}
             </div>
         {/each}
@@ -71,7 +65,7 @@
                 {date.getMonth() + 1}/{date.getDate()}
             </div>
             {#each timeSlots as period, index}
-                <div class="flex flex-row px-4 justify-center {index % 2 != 0 ? 'border-b-2' : ''}">
+                <div class="flex flex-row px-4 justify-center {index % 2 != 0 ? 'border-b-2 pb-1' : ''}">
                     -
                 </div>
             {/each}
