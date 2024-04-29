@@ -25,8 +25,8 @@
 
 <div class="h-screen">
     <Navbar />
-    <div class="flex flex-col items-center justify-center h-full gap-y-8">
-        <div class="flex flex-row items-center">
+    <div class="flex flex-col items-center justify-center h-full gap-y-8 w-full max-w-screen-lg mx-auto">
+        <div class="flex flex-row items-center w-5/6 justify-between">
             <div class="flex flex-col space-y-2 mr-12 w-96">
                 <h1 class="text-4xl font-bold">{meetingName}</h1>
                 <h2 class="text-2xl">Availabilities</h2>
@@ -35,7 +35,7 @@
                 <Button>Add Availability</Button>
             </div>
         </div>
-        <div class="flex flex-row gap-x-4">
+        <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col items-center">
                 <Availability selectedDates={selectedDates} startHour={startHour} endHour={endHour} />
             </div>
