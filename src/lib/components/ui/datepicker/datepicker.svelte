@@ -1,4 +1,5 @@
 <script>
+    
     /**
 	 * @type {Date[]}
 	 */
@@ -182,5 +183,3 @@
         </button>
     {/each}
 </div>
-
-<Availability selectedDates={selectedDates} />
