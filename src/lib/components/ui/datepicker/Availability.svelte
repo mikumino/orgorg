@@ -10,6 +10,11 @@
     */
     export let selectedDates = [];
 
+    /**
+     * @type {Date[]}
+    */
+    let selectedSlots = [];
+
     //const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     //const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'];
     
@@ -22,74 +27,68 @@
         return hour.toString().padStart(2, '0') + ":" + minute;
     });
 
+    /**
+     * @param {Date} selectedDate
+     * @returns {void}
+    */
+    function cellSelected(selectedDate) {
+        if(isCellSelected(selectedDate)){
+            console.log("Selected date: " + selectedDate);
+            selectedSlots.forEach(
+                (date) => console.log(date)
+            );
+            const index = selectedSlots.findIndex(date => date.toString() === selectedDate.toString());
+            if(index !== -1) {
+                selectedSlots.splice(index, 1);
+            }
+        }else{
+            selectedSlots.push(selectedDate);
+        }
+    }
+
+    /**
+     * @param {Date} timeSlot
+    */
+    function isCellSelected(timeSlot) {
+        return selectedSlots.find(date => date.toString() === timeSlot.toString());
+    }
+
 </script>
 
-<style>
-    .grid-container{
-        display: grid;
-        grid-template-columns: auto repeat(5, 1fr);
-        gap: 8px
-    }
-
-    .time-slot{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100px;
-        height: 40px;
-        border: 1px solid #ccc;
-        cursor: pointer;
-        user-select: none;
-        transition: background-color 0.3s ease;
-    }
-
-    .time-slot.selected{
-        background-color: lightblue;
-    }
-</style>
-
-<div class="flex flex-row w-96">
-    <div class="flex flex-col gap-y-2">
-        <div class="flex flex-row px-4 border-b-2">
-            &nbsp;
+<div class="flex text-xs">
+    <div class="flex flex-col gap-y-0 basis-full shrink min-w-0 text-gray-500" style="font-size: 10px">
+        <div class="flex flex-row px-4 border-b-2 shrink min-h-0 basis-full">
+            <br/>
+            <br/>
         </div>
         {#each timeSlots as period, index}
-            <div class="flex flex-row px-4 {index %2 != 0 ? 'border-b-2 pb-1' : ''}">
+            <div class="flex flex-row px-4 justify-center {index %2 != 0 ? 'border-b-2 pb-0' : ''}">
                 {period}
             </div>
         {/each}
     </div>    
     {#each selectedDates as date}
-        <div class="flex flex-col gap-y-2">
-            <div class="flex flex-row px-4 border-b-2">
-                {date.getMonth() + 1}/{date.getDate()}
+        <div class="flex flex-col gap-y-0 basis-full shrink min-w-0">
+            <div class="flex flex-row px-4 justify-center border-b-2 shrink min-h-0 basis-full">
+                <div class="flex flex-col text-gray-500">
+                    <p class="flex flex-row justify-center">
+                        {date.toLocaleDateString(undefined, { weekday: 'short' })}
+                    </p>
+                    <p class="flex flex-row justify-center">
+                        {date.getMonth() + 1}/{date.getDate()}
+                    </p>
+                </div>
             </div>
             {#each timeSlots as period, index}
-                <div class="flex flex-row px-4 justify-center {index % 2 != 0 ? 'border-b-2 pb-1' : ''}">
-                    -
-                </div>
+                {@const cellDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(period.split(':')[0]), parseInt(period.split(':')[1]))}
+                <button on:click={() => cellSelected(cellDate)}
+                class={`flex flex-row px-4 justify-center cursor-pointer select-none hover:bg-blue-100 ${index % 2 != 0 ? 'border-b-2 pb-0' : ''} ${isCellSelected(cellDate) ? 'bg-blue-200' : ''}`}
+                title="{date.getMonth() + 1}/{date.getDate()} @ {period}"
+                >
+                    <br/>
+                </button>
             {/each}
         </div>
     {/each}
 </div>
-
-<!-- <div class="grid-container">
-        {#each daysOfWeek as day}
-            <div class="time-slot">{day}</div>
-        {/each}
-    
-        {#each daysOfWeek as _, dayIndex}
-            {#each timeSlots as time}
-                <div
-                    class="time-slot {isDateSelected(dayIndex, time) ? 'selected' : ''}"
-                >
-                    {time}
-                </div>
-            {/each}
-        {/each}
-    </div>
--->
-
-
-
 

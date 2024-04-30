@@ -11,11 +11,17 @@
         new Date(2024, 3, 30),
         new Date(2024, 4, 1),
         new Date(2024, 4, 2),
-        new Date(2024, 4, 3)
+        new Date(2024, 4, 3),
+        new Date(2024, 4, 4),
+        new Date(2024, 4, 5),
+        new Date(2024, 4, 6),
+        new Date(2024, 4, 7),
+        new Date(2024, 4, 8),
+        new Date(2024, 4, 9),
+        new Date(2024, 4, 10),
     ];
-    console.log(selectedDates[0]);
     let startHour = 0;
-    let endHour = 5;
+    let endHour = 24;
     let names = ["Alan", "Ava", "Dylan", "Daniel", "Lauren"]
 </script>
 
@@ -36,7 +42,7 @@
             </div>
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
-            <div class="flex flex-col items-center">
+            <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96 overflow-y-scroll">
                 <Availability selectedDates={selectedDates} startHour={startHour} endHour={endHour} />
             </div>
             <div class="flex flex-col gap-y-4">        
