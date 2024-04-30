@@ -29,66 +29,63 @@
 
     /**
      * @param {Date} selectedDate
-     * @returns {void}
     */
     function cellSelected(selectedDate) {
         if(isCellSelected(selectedDate)){
-            console.log("Selected date: " + selectedDate);
-            selectedSlots.forEach(
-                (date) => console.log(date)
-            );
-            const index = selectedSlots.findIndex(date => date.toString() === selectedDate.toString());
-            if(index !== -1) {
-                selectedSlots.splice(index, 1);
-            }
-        }else{
-            selectedSlots.push(selectedDate);
+            console.log("in array - deleting");
+            selectedSlots = selectedSlots.filter(date => date.getTime() !== selectedDate.getTime())
+        } else {
+            console.log("not in array - adding");
+            selectedSlots = [...selectedSlots, selectedDate];
         }
+        selectedSlots = selectedSlots;
     }
 
     /**
      * @param {Date} timeSlot
     */
     function isCellSelected(timeSlot) {
-        return selectedSlots.find(date => date.toString() === timeSlot.toString());
+        return selectedSlots.find(date => date.getTime() === timeSlot.getTime());
     }
 
 </script>
 
-<div class="flex text-xs">
-    <div class="flex flex-col gap-y-0 basis-full shrink min-w-0 text-gray-500" style="font-size: 10px">
-        <div class="flex flex-row px-4 border-b-2 shrink min-h-0 basis-full">
-            <br/>
-            <br/>
-        </div>
-        {#each timeSlots as period, index}
-            <div class="flex flex-row px-4 justify-center {index %2 != 0 ? 'border-b-2 pb-0' : ''}">
-                {period}
-            </div>
-        {/each}
-    </div>    
-    {#each selectedDates as date}
-        <div class="flex flex-col gap-y-0 basis-full shrink min-w-0">
-            <div class="flex flex-row px-4 justify-center border-b-2 shrink min-h-0 basis-full">
-                <div class="flex flex-col text-gray-500">
-                    <p class="flex flex-row justify-center">
-                        {date.toLocaleDateString(undefined, { weekday: 'short' })}
-                    </p>
-                    <p class="flex flex-row justify-center">
-                        {date.getMonth() + 1}/{date.getDate()}
-                    </p>
-                </div>
+{#key selectedSlots}
+    <div class="flex text-xs">
+        <div class="flex flex-col gap-y-0 shrink min-w-0 text-gray-500" style="font-size: 10px">
+            <div class="flex flex-row px-4 border-b-2 shrink min-h-0 basis-full">
+                <br/>
+                <br/>
             </div>
             {#each timeSlots as period, index}
-                {@const cellDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(period.split(':')[0]), parseInt(period.split(':')[1]))}
-                <button on:click={() => cellSelected(cellDate)}
-                class={`flex flex-row px-4 justify-center cursor-pointer select-none hover:bg-blue-100 ${index % 2 != 0 ? 'border-b-2 pb-0' : ''} ${isCellSelected(cellDate) ? 'bg-blue-200' : ''}`}
-                title="{date.getMonth() + 1}/{date.getDate()} @ {period}"
-                >
-                    <br/>
-                </button>
+                <div class="flex flex-row px-4 justify-center {index %2 != 0 ? 'border-b-2 pb-0' : ''}">
+                    {period}
+                </div>
             {/each}
-        </div>
-    {/each}
-</div>
+        </div>    
+        {#each selectedDates as date}
+            <div class="flex flex-col gap-y-0 basis-full shrink min-w-0">
+                <div class="flex flex-row px-4 justify-center border-b-2 shrink min-h-0 basis-full">
+                    <div class="flex flex-col text-gray-500">
+                        <p class="flex flex-row justify-center">
+                            {date.toLocaleDateString(undefined, { weekday: 'short' })}
+                        </p>
+                        <p class="flex flex-row justify-center">
+                            {date.getMonth() + 1}/{date.getDate()}
+                        </p>
+                    </div>
+                </div>
+                {#each timeSlots as period, index}
+                    {@const cellDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(period.split(':')[0]), parseInt(period.split(':')[1]))}
+                    <button on:click={() => cellSelected(cellDate)}
+                    class={`flex flex-row px-4 justify-center cursor-pointer select-none ${index % 2 != 0 ? 'border-b-2 pb-0' : ''} ${isCellSelected(cellDate) ? 'bg-blue-200 hover:bg-blue-300' : 'hover:bg-blue-100'}`}
+                    title="{date.getMonth() + 1}/{date.getDate()} @ {period}"
+                    >
+                        <br/>
+                    </button>
+                {/each}
+            </div>
+        {/each}
+    </div>
+{/key}
 
