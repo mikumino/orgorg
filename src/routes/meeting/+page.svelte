@@ -2,7 +2,7 @@
     import Input from "$lib/components/ui/input/input.svelte";
     import Label from "$lib/components/ui/label/label.svelte";
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
-    import Availability from "$lib/components/ui/datepicker/Availability.svelte";
+    import AvailabilityPicker from "$lib/components/availability/availabilitypicker.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
 
     let meetingName = "Awesome meeting";
@@ -43,7 +43,7 @@
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96 overflow-y-scroll">
-                <Availability selectedDates={selectedDates} startHour={startHour} endHour={endHour} />
+                <AvailabilityPicker selectedDates={selectedDates} startHour={startHour} endHour={endHour} />
             </div>
             <div class="flex flex-col gap-y-4">        
                 <h3 class="text-2xl font-medium">Responders ({names.length})</h3>

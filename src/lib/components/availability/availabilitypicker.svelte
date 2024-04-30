@@ -7,17 +7,15 @@
     
     /**
      * @type {Date[]}
+     * array of dates passed from the meeting
     */
     export let selectedDates = [];
 
     /**
      * @type {Date[]}
+     * array of dates selected from the availability picker
     */
     let selectedSlots = [];
-
-    //const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    //const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'];
-    
 
     const numPeriods = (endHour-startHour) * 2; // number of 30-minute periods in the given timeframe
     let timeSlots = Array.from({length : numPeriods}, (_, index) => { 
@@ -31,11 +29,9 @@
      * @param {Date} selectedDate
     */
     function cellSelected(selectedDate) {
-        if(isCellSelected(selectedDate)){
-            console.log("in array - deleting");
+        if(isCellSelected(selectedDate)){ // remove date from the array if it's already in there
             selectedSlots = selectedSlots.filter(date => date.getTime() !== selectedDate.getTime())
-        } else {
-            console.log("not in array - adding");
+        } else { // add date to the array if it's not in there
             selectedSlots = [...selectedSlots, selectedDate];
         }
         selectedSlots = selectedSlots;
@@ -44,7 +40,7 @@
     /**
      * @param {Date} timeSlot
     */
-    function isCellSelected(timeSlot) {
+    function isCellSelected(timeSlot) { // returns true if the date for the given cell is already in the array
         return selectedSlots.find(date => date.getTime() === timeSlot.getTime());
     }
 
@@ -52,8 +48,8 @@
 
 {#key selectedSlots}
     <div class="flex text-xs">
-        <div class="flex flex-col gap-y-0 shrink min-w-0 text-gray-500" style="font-size: 10px">
-            <div class="flex flex-row px-4 border-b-2 shrink min-h-0 basis-full">
+        <div class="flex flex-col gap-y-0 text-gray-500" style="font-size: 10px">
+            <div class="flex flex-row border-b-2">
                 <br/>
                 <br/>
             </div>
@@ -79,8 +75,7 @@
                     {@const cellDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(period.split(':')[0]), parseInt(period.split(':')[1]))}
                     <button on:click={() => cellSelected(cellDate)}
                     class={`flex flex-row px-4 justify-center cursor-pointer select-none ${index % 2 != 0 ? 'border-b-2 pb-0' : ''} ${isCellSelected(cellDate) ? 'bg-blue-200 hover:bg-blue-300' : 'hover:bg-blue-100'}`}
-                    title="{date.getMonth() + 1}/{date.getDate()} @ {period}"
-                    >
+                    title="{date.getMonth() + 1}/{date.getDate()} @ {period}">
                         <br/>
                     </button>
                 {/each}

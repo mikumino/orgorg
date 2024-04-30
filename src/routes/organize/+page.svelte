@@ -3,7 +3,6 @@
     import Label from "$lib/components/ui/label/label.svelte";
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
     import DatePicker from "$lib/components/ui/datepicker/datepicker.svelte";
-    import Availability from "$lib/components/ui/datepicker/Availability.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
 </script>
 
