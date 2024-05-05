@@ -52,7 +52,7 @@
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96 overflow-y-scroll">
-                <AvailabilityPicker selectedDates={selectedDates} startHour={startHour} endHour={endHour} />
+                <AvailabilityPicker selectedDates={selectedDates} startHour={startHour} endHour={endHour} bind:addMode={addMode} />
             </div>
             <div class="flex flex-col gap-y-4">        
                 <h3 class="text-2xl font-medium">Responders ({names.length})</h3>

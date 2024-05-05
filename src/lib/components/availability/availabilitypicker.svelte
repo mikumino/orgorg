@@ -12,10 +12,17 @@
     export let selectedDates = [];
 
     /**
+     * @type {boolean}
+     * boolean to determine if the user is adding availability
+    */
+    export let addMode = false;
+
+    /**
      * @type {Date[]}
      * array of dates selected from the availability picker
     */
     let selectedSlots = [];
+    
 
     const numPeriods = (endHour-startHour) * 2; // number of 30-minute periods in the given timeframe
     let timeSlots = Array.from({length : numPeriods}, (_, index) => { 
@@ -29,6 +36,7 @@
      * @param {Date} selectedDate
     */
     function cellSelected(selectedDate) {
+        if (!addMode) return; // if the user is not adding availability, don't do anything
         if(isCellSelected(selectedDate)){ // remove date from the array if it's already in there
             selectedSlots = selectedSlots.filter(date => date.getTime() !== selectedDate.getTime())
         } else { // add date to the array if it's not in there
