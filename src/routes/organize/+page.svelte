@@ -26,6 +26,39 @@
     $: formData.startTime = `${startTimeHour}:00 ${startTimePeriod}`;
     $: formData.endTime = `${endTimeHour}:00 ${endTimePeriod}`;
     async function createMeeting() {
+        // error checking - this solution is rough and doesn't use the error functions or components that we have
+        let errors = new Array();
+        
+        // time checking
+        let startTimeRaw = startTimeHour;
+        let endTimeRaw = endTimeHour
+        // convert 12h PM times to 24h
+        if(startTimePeriod == "PM")
+            startTimeRaw += 12;
+        if(endTimePeriod == "PM")
+            endTimeRaw += 12;
+        if(endTimeRaw - startTimeRaw <= 0) { // can't set times to be the same or backwards
+            errors.push("Please enter a valid time range.");
+        }
+
+        // name checking
+        if(formData.meetingName.trim() == "") {
+            errors.push("Please enter a meeting name.");
+        }
+
+        // date checking
+        if(formData.selectedDates.length == 0) {
+            errors.push("Please select at least one meeting date.");
+        }
+
+        // halt function if any errors are present
+        if(errors.length != 0) {
+            // todo: display errors in an elegant fashion
+            alert(JSON.stringify(errors));
+            return;
+        }
+        
+        // create the database entry if no errors are found
         const { data, error } = await supabase
             .from("Meetings")
             .insert([
@@ -42,7 +75,8 @@
         } else {
             console.log(data[0]);
             goto(`/meeting/${data[0].id}`);
-        } 
+        }
+        
     }
 
 </script>
@@ -59,7 +93,7 @@
             <form class="w-fit" on:submit|preventDefault={createMeeting}>
                 <div class="flex flex-col space-y-4 mb-4 w-96">
                     <Label for="meetingName">Meeting name</Label>
-                    <Input type="text" id="meetingName" bind:value={formData.meetingName}/>
+                    <Input type="text" id="meetingName" required bind:value={formData.meetingName}/>
                 </div>
                 <div class="flex flex-col space-y-4 mb-4">
                     <Label for="timeRange">Time range</Label>
