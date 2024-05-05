@@ -3,7 +3,7 @@
     /**
 	 * @type {Date[]}
 	 */
-    let selectedDates = [];
+    export let selectedDates = [];
 
     /**
      * The range of dates that are currently being displayed, used to display the calendar

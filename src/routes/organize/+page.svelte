@@ -4,6 +4,27 @@
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
     import DatePicker from "$lib/components/ui/datepicker/datepicker.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
+    import Timepicker from "$lib/components/ui/timepicker/timepicker.svelte";
+
+    let startTimeHour = 7;
+    let startTimePeriod = "AM";
+    let endTimeHour = 7;
+    let endTimePeriod = "PM";
+
+    let formData = {
+        meetingName: "",
+        startTime: "",
+        endTime: "",
+        selectedDates: []
+    };
+
+    $: formData.startTime = `${startTimeHour} ${startTimePeriod}`;
+    $: formData.endTime = `${endTimeHour} ${endTimePeriod}`;
+
+    function createMeeting() {
+        console.log(formData);
+    }
+
 </script>
 
 <style>
@@ -15,24 +36,24 @@
     <div class="flex flex-row items-center justify-center h-full">
         <div class="flex flex-col space-y-6 mr-12">
             <h1 class="text-4xl font-bold">Organize meeting</h1>
-            <form class="w-fit">
+            <form class="w-fit" on:submit|preventDefault={createMeeting}>
                 <div class="flex flex-col space-y-4 mb-4 w-96">
                     <Label for="meetingName">Meeting name</Label>
-                    <Input type="text" id="meetingName"/>
+                    <Input type="text" id="meetingName" bind:value={formData.meetingName}/>
                 </div>
                 <div class="flex flex-col space-y-4 mb-4">
                     <Label for="timeRange">Time range</Label>
-                    <div class="flex flex-row space-x-4">
-                        <Input id="startTime" class='w-fit' type="time" />
-                        <p class="text-slate-500">to</p>
-                        <Input id="endTime" class='w-fit' type="time" />
+                    <div class="flex flex-row space-x-6">
+                        <Timepicker bind:selectedHour={startTimeHour} bind:selectedPeriod={startTimePeriod} />
+                        <p>to</p>
+                        <Timepicker bind:selectedHour={endTimeHour} bind:selectedPeriod={endTimePeriod} />
                     </div>
                 </div>
-                <Button>Create meeting</Button>
+                <Button type="submit">Create meeting</Button>
             </form>
         </div>
         <div>
-            <DatePicker />
+            <DatePicker bind:selectedDates={formData.selectedDates} />
         </div>
     </div>
 </div>
