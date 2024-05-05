@@ -6,6 +6,7 @@
 
     export let data;
     let meeting;
+    let addMode = false;
     
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
@@ -21,6 +22,11 @@
 
     function handleGuestMode(event) {
         console.log(event.detail);
+        addMode = true;
+    }
+    function saveAvailability() {
+        console.log("Saving availability");
+        addMode = false;
     }
 </script>
 
@@ -37,7 +43,11 @@
                 <h2 class="text-2xl">Availabilities</h2>
             </div>
             <div class="flex flex-col">
-                <AvailabilityDialog on:addAsGuest={handleGuestMode}/>
+                {#if addMode}
+                    <Button on:click={saveAvailability}>Save</Button>
+                {:else}
+                    <AvailabilityDialog on:addAsGuest={handleGuestMode}/>
+                {/if}
             </div>
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
