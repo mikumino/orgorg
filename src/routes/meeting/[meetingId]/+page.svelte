@@ -12,7 +12,11 @@
         meeting = data.body.meeting;
     }
     let meetingName = meeting.EventName;
-    let selectedDates = meeting.dates.map((/** @type {string | number | Date} */ date) => new Date(date));
+    
+    let selectedDates = meeting.dates.map((/** @type {string} */ date) => {
+        let [year, month, day] = date.split("-").map((/** @type {string} */ datePart) => parseInt(datePart));
+        return new Date(year, month-1, day);
+    });
     let startHour = parseInt(meeting.MinTime.split(":")[0]);
     let endHour = parseInt(meeting.MaxTime.split(":")[0]);
 
