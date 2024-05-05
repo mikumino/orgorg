@@ -1,6 +1,7 @@
 <!-- Form needs client-side validation -->
 
 <script>
+    import { supabase } from "../../supabaseClient";
     import Input from "$lib/components/ui/input/input.svelte";
     import Label from "$lib/components/ui/label/label.svelte";
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
@@ -20,11 +21,25 @@
         selectedDates: []
     };
 
-    $: formData.startTime = `${startTimeHour} ${startTimePeriod}`;
-    $: formData.endTime = `${endTimeHour} ${endTimePeriod}`;
-
-    function createMeeting() {
-        console.log(formData);
+    // turn time into iso string
+    $: formData.startTime = `${startTimeHour}:00 ${startTimePeriod}`;
+    $: formData.endTime = `${endTimeHour}:00 ${endTimePeriod}`;
+    async function createMeeting() {
+        const { data, error } = await supabase
+            .from("Meetings")
+            .insert([
+                {
+                    EventName: formData.meetingName,
+                    MinTime: formData.startTime,
+                    MaxTime: formData.endTime,
+                    dates: formData.selectedDates
+                }
+            ]);
+        if (error) {
+            console.error(error);
+        } else {
+            console.log(data);
+        } 
     }
 
 </script>
