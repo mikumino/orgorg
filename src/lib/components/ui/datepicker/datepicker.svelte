@@ -170,13 +170,13 @@
         </svg>  
     </button>
 </div>
-<div class="grid grid-cols-7 gap-3">
+<div class="grid grid-cols-7 gap-6">
     {#each displayedDateRange.slice(0, 7) as date, i}
-        <p class="text-center text-slate-500">{date.toLocaleDateString('en-US', { weekday: 'short' })}</p>
+        <p class="text-center text-lg text-slate-500">{date.toLocaleDateString('en-US', { weekday: 'short' })}</p>
     {/each}
     {#each displayedDateRange as date, i}
-        <button class={`flex items-center justify-center p-2 rounded-full group w-12 h-12 hover:bg-slate-200 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
-            <p class={`absolute text-slate-500 group-hover:bg-slate-200 rounded-lg -translate-y-5 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`}>
+        <button class={`flex items-center text-lg justify-center p-2 rounded-full group w-12 h-12 hover:bg-slate-200 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`} on:mousedown={() => handleMouseDown(date)} on:mouseup={() => handleMouseUp(date)} on:mouseover={() => handleMouseOver(date)} on:focus={() => handleMouseOver(date)}>
+            <p class={`absolute text-lg text-slate-500 group-hover:bg-slate-200 rounded-lg -translate-y-5 transition-all ${hasDate(selectedDates, date) ? 'bg-slate-300' : ''} ${hasDate(displayedDateRangeSelection, date) ? 'bg-slate-200' : ''}`}>
                 {date.getDate() === 1 && i !== 0 ? date.toLocaleDateString('en-US', { month: 'short' }) : ''}
             </p>
             {date.getDate()}

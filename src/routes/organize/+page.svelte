@@ -87,27 +87,32 @@
 
 <div class="h-screen">
     <Navbar />
-    <div class="flex flex-row items-center justify-center h-full">
-        <div class="flex flex-col space-y-6 mr-12">
-            <h1 class="text-4xl font-bold">Organize meeting</h1>
-            <form class="w-fit" on:submit|preventDefault={createMeeting}>
-                <div class="flex flex-col space-y-4 mb-4 w-96">
-                    <Label for="meetingName">Meeting name</Label>
-                    <Input type="text" id="meetingName" required bind:value={formData.meetingName}/>
-                </div>
-                <div class="flex flex-col space-y-4 mb-4">
-                    <Label for="timeRange">Time range</Label>
-                    <div class="flex flex-row space-x-6">
-                        <Timepicker bind:selectedHour={startTimeHour} bind:selectedPeriod={startTimePeriod} />
-                        <p>to</p>
-                        <Timepicker bind:selectedHour={endTimeHour} bind:selectedPeriod={endTimePeriod} />
+    <div class="flex items-center bg-slate-200 justify-center h-full">
+        <div class="flex flex-row p-12 h-fit bg-white rounded-2xl shadow-lg items-center justify-center">
+            <div class="flex flex-col space-y-6 mr-64">
+                <h1 class="text-5xl font-bold">Organize meeting</h1>
+                <form class="flex flex-col w-fit" on:submit|preventDefault={createMeeting}>
+                    <div class="flex flex-col space-y-4 mb-4 w-96">
+                        <Label for="meetingName">Meeting name</Label>
+                        <Input type="text" id="meetingName" required bind:value={formData.meetingName}/>
                     </div>
-                </div>
-                <Button type="submit">Create meeting</Button>
-            </form>
-        </div>
-        <div>
-            <DatePicker bind:selectedDates={formData.selectedDates} />
+                    <div class="flex flex-col space-y-4 mb-8">
+                        <Label for="timeRange">Time range</Label>
+                        <div class="flex flex-row space-x-6">
+                            <Timepicker bind:selectedHour={startTimeHour} bind:selectedPeriod={startTimePeriod} />
+                            <p>to</p>
+                            <Timepicker bind:selectedHour={endTimeHour} bind:selectedPeriod={endTimePeriod} />
+                        </div>
+                    </div>
+                    <div>
+                        <Button type="submit">Create meeting</Button>
+                    </div>
+                </form>
+            </div>
+            <div>
+                <DatePicker bind:selectedDates={formData.selectedDates} />
+            </div>
         </div>
     </div>
+
 </div>
