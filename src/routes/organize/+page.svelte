@@ -34,7 +34,8 @@
                     MaxTime: formData.endTime,
                     dates: formData.selectedDates
                 }
-            ]);
+            ])
+            .select();
         if (error) {
             console.error(error);
         } else {
