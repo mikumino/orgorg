@@ -95,7 +95,7 @@
             firstRangeDate = null;
             secondRangeDate = null;
             displayedDateRangeSelection = [];
-        } else if (firstRangeDate && date < firstRangeDate) {
+        } else if (firstRangeDate != null && date < firstRangeDate) {
             secondRangeDate = firstRangeDate;
             firstRangeDate = date;
             // Select all dates between firstRangeDate and secondRangeDate
