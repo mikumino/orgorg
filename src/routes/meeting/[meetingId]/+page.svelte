@@ -6,12 +6,15 @@
     import Button from "$lib/components/ui/button/button.svelte";
 
     export let data;
-    console.log(data);
+    let meeting;
     
-    let meetingName = data.body.meeting.EventName;
-    let selectedDates = data.body.meeting.dates.map(date => new Date(date));
-    let startHour = parseInt(data.body.meeting.MinTime.split(":")[0]);
-    let endHour = parseInt(data.body.meeting.MaxTime.split(":")[0]);
+    if ('body' in data && 'meeting' in data.body) {
+        meeting = data.body.meeting;
+    }
+    let meetingName = meeting.EventName;
+    let selectedDates = meeting.dates.map((/** @type {string | number | Date} */ date) => new Date(date));
+    let startHour = parseInt(meeting.MinTime.split(":")[0]);
+    let endHour = parseInt(meeting.MaxTime.split(":")[0]);
 
     // let meetingName = "Meeting Name";
     // let selectedDates = ["2022-01-01", "2022-01-02", "2022-01-03"];
