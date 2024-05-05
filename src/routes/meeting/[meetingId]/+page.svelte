@@ -1,6 +1,5 @@
 <script>
-    import Input from "$lib/components/ui/input/input.svelte";
-    import Label from "$lib/components/ui/label/label.svelte";
+    import AvailabilityDialog from "$lib/components/ui/dialog/availability-dialog.svelte";
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
     import AvailabilityPicker from "$lib/components/availability/availabilitypicker.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
@@ -40,7 +39,7 @@
                 <h2 class="text-2xl">Availabilities</h2>
             </div>
             <div class="flex flex-col">
-                <Button>Add Availability</Button>
+                <AvailabilityDialog />
             </div>
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
