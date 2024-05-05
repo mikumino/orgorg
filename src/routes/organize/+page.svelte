@@ -1,3 +1,5 @@
+<!-- Form needs client-side validation -->
+
 <script>
     import Input from "$lib/components/ui/input/input.svelte";
     import Label from "$lib/components/ui/label/label.svelte";
