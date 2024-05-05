@@ -1,10 +1,16 @@
 <script>
     import * as Dialog from "$lib/components/ui/dialog";
+	import { createEventDispatcher } from "svelte";
 	import Button from "../button/button.svelte";
     import Input from "../input/input.svelte";
     import Label from "../label/label.svelte";
 
     export let name = "";
+    const dispatch = createEventDispatcher();
+    
+    function addAsGuest() {
+        dispatch("addAsGuest", {name});
+    }
 </script>
 
 <Dialog.Root>
@@ -21,9 +27,9 @@
                 <p class="text-center my-6">or</p>
             </div>
             <div class="flex flex-col">
-                <Label class="mb-4" bind:value={name} for="name">Name</Label>
-                <Input class="mb-6" id="name" type="text" />
-                <Button variant="outline">Add as Guest</Button>
+                <Label class="mb-4" for="name">Name</Label>
+                <Input class="mb-6" id="name" type="text" bind:value={name}  />
+                <Button on:click={addAsGuest} variant="outline">Add as Guest</Button>
             </div>
         </div>
     </Dialog.Content>

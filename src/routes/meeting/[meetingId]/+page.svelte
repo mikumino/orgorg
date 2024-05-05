@@ -11,19 +11,17 @@
         meeting = data.body.meeting;
     }
     let meetingName = meeting.EventName;
-    
     let selectedDates = meeting.dates.map((/** @type {string} */ date) => {
         let [year, month, day] = date.split("-").map((/** @type {string} */ datePart) => parseInt(datePart));
         return new Date(year, month-1, day);
     });
     let startHour = parseInt(meeting.MinTime.split(":")[0]);
     let endHour = parseInt(meeting.MaxTime.split(":")[0]);
+    let names = []
 
-    // let meetingName = "Meeting Name";
-    // let selectedDates = ["2022-01-01", "2022-01-02", "2022-01-03"];
-    // let startHour = 7;
-    // let endHour = 19;
-    let names = ["Alan", "Ava", "Dylan", "Daniel", "Lauren"]
+    function handleGuestMode(event) {
+        console.log(event.detail);
+    }
 </script>
 
 <style>
@@ -39,7 +37,7 @@
                 <h2 class="text-2xl">Availabilities</h2>
             </div>
             <div class="flex flex-col">
-                <AvailabilityDialog />
+                <AvailabilityDialog on:addAsGuest={handleGuestMode}/>
             </div>
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
