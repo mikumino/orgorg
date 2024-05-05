@@ -8,6 +8,7 @@
     import DatePicker from "$lib/components/ui/datepicker/datepicker.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
     import Timepicker from "$lib/components/ui/timepicker/timepicker.svelte";
+	import { goto } from "$app/navigation";
 
     let startTimeHour = 7;
     let startTimePeriod = "AM";
@@ -39,7 +40,8 @@
         if (error) {
             console.error(error);
         } else {
-            console.log(data);
+            console.log(data[0]);
+            goto(`/meeting/${data[0].id}`);
         } 
     }
 

@@ -5,23 +5,18 @@
     import AvailabilityPicker from "$lib/components/availability/availabilitypicker.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
 
-    let meetingName = "Awesome meeting";
-    let selectedDates = [
-        new Date(2024, 3, 29),
-        new Date(2024, 3, 30),
-        new Date(2024, 4, 1),
-        new Date(2024, 4, 2),
-        new Date(2024, 4, 3),
-        new Date(2024, 4, 4),
-        new Date(2024, 4, 5),
-        new Date(2024, 4, 6),
-        new Date(2024, 4, 7),
-        new Date(2024, 4, 8),
-        new Date(2024, 4, 9),
-        new Date(2024, 4, 10),
-    ];
-    let startHour = 0;
-    let endHour = 24;
+    export let data;
+    console.log(data);
+    
+    let meetingName = data.body.meeting.EventName;
+    let selectedDates = data.body.meeting.dates.map(date => new Date(date));
+    let startHour = parseInt(data.body.meeting.MinTime.split(":")[0]);
+    let endHour = parseInt(data.body.meeting.MaxTime.split(":")[0]);
+
+    // let meetingName = "Meeting Name";
+    // let selectedDates = ["2022-01-01", "2022-01-02", "2022-01-03"];
+    // let startHour = 7;
+    // let endHour = 19;
     let names = ["Alan", "Ava", "Dylan", "Daniel", "Lauren"]
 </script>
 

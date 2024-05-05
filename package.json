@@ -39,6 +39,7 @@
 		"@supabase/supabase-js": "^2.42.4",
 		"bits-ui": "^0.19.3",
 		"clsx": "^2.1.0",
+		"dotenv": "^16.4.5",
 		"formsnap": "^0.5.1",
 		"lucide-svelte": "^0.344.0",
 		"sveltekit-superforms": "^2.7.0",
