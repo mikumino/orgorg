@@ -1,8 +1,13 @@
 import { writable } from "svelte/store";
-import { supabase } from "../supabaseClient";
+import { supabase } from "./supabaseClient";
 
-export const user = writable(supabase.auth.getUser());
+export const user = writable(null);
 
 supabase.auth.onAuthStateChange((event, session) => {
-    user.set(session?.user);
+    if(session){
+        user.set(session?.user);
+    }else{
+        user.set(null);
+    }
+    
 });
