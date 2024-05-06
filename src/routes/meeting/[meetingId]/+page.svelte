@@ -2,6 +2,7 @@
     import AvailabilityDialog from "$lib/components/ui/dialog/availability-dialog.svelte";
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
     import AvailabilityPicker from "$lib/components/availability/availabilitypicker.svelte";
+    import AvailabilityLegend from "$lib/components/availability/availabilitylegend.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
 	import { supabase } from "../../../supabaseClient.ts";
 
@@ -49,7 +50,7 @@
         // color calculation
         let cappedNumResponses = Math.min(nameList.length, 10);
 
-        let lightColor = "#eff6ff";
+        let lightColor = "#dbeafe";
         let darkColor = "#172554";
 
         let step = 1 / cappedNumResponses;
@@ -155,10 +156,13 @@
             </div>
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
-            <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96 overflow-y-scroll">
-                {#key availabilities}
-                    <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
-                {/key}
+            <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96">
+                <AvailabilityLegend cellColors={cellColors} numResponses={names.length} />
+                <div class="flex-row overflow-y-scroll">
+                    {#key availabilities}
+                        <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
+                    {/key}
+                </div>
             </div>
             <div class="flex flex-col gap-y-4">        
                 <h3 class="text-2xl font-medium">Responders ({names.length})</h3>
