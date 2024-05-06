@@ -3,13 +3,18 @@
     import Navbar from "$lib/components/ui/navbar/navbar.svelte";
     import AvailabilityPicker from "$lib/components/availability/availabilitypicker.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
+	import { supabase } from "../../../supabaseClient.ts";
 
     export let data;
     let meeting;
+    let availabilities;
     let addMode = false;
     
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
+        availabilities = data.body.availabilities;
+        console.log(meeting);
+        console.log(availabilities);
     }
     let meetingName = meeting.EventName;
     let selectedDates = meeting.dates.map((/** @type {string} */ date) => {
@@ -18,16 +23,60 @@
     });
     let startHour = parseInt(meeting.MinTime.split(":")[0]);
     let endHour = parseInt(meeting.MaxTime.split(":")[0]);
-    let names = []
+    let names = availabilities.map((/** @type {any} */ availability) => availability.username);
+    // TODO: handle logged in user
+    let availabilitySelectionData = {
+        username: "",
+        datetimes: [],
+    }
 
     function handleGuestMode(event) {
         console.log(event.detail);
+        availabilitySelectionData.username = event.detail.name;
         addMode = true;
     }
-    function saveAvailability() {
+    async function saveAvailability() {
         console.log("Saving availability");
+        if (availabilitySelectionData.username === "") {
+            console.error("No username provided");
+            return;
+        } 
+        if (availabilitySelectionData.datetimes.length === 0) {
+            console.error("No datetimes provided");
+            return;
+        }
+        const { data, error } = await supabase
+            .from('Availabilities')
+            .insert([
+                {
+                    meeting_id: meeting.id,
+                    username: availabilitySelectionData.username,
+                    datetimes: availabilitySelectionData.datetimes
+                }
+            ])
+            .select();
+        if (error) {
+            console.error(error);
+        } else {
+            console.log(data[0]);
+            refetchAvailabilities();
+        }
         addMode = false;
     }
+    async function refetchAvailabilities() {
+        const { data, error } = await supabase
+            .from('Availabilities')
+            .select()
+            .eq('meeting_id', meeting.id);
+        if (error) {
+            console.error(error);
+        } else {
+            console.log(data);
+            availabilities = data;
+            names = availabilities.map((/** @type {any} */ availability) => availability.username);
+        }
+    }
+
 </script>
 
 <style>
@@ -52,7 +101,7 @@
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96 overflow-y-scroll">
-                <AvailabilityPicker selectedDates={selectedDates} startHour={startHour} endHour={endHour} bind:addMode={addMode} />
+                <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} bind:addMode={addMode} />
             </div>
             <div class="flex flex-col gap-y-4">        
                 <h3 class="text-2xl font-medium">Responders ({names.length})</h3>

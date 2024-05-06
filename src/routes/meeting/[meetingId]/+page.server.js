@@ -10,6 +10,11 @@ export async function load({ params }) {
         .eq('id', meetingId)
         .single();
 
+    const { data: availabilities, error: availabilitiesError  } = await supabase
+        .from('Availabilities')
+        .select('*')
+        .eq('meeting_id', meetingId);
+
     if (error) {
         return {
             status: 500,
@@ -17,10 +22,18 @@ export async function load({ params }) {
         };
     }
 
+    if (availabilitiesError) {
+        return {
+            status: 500,
+            body: availabilitiesError
+        };
+    }
+
     return {
         status: 200,
         body: {
-            meeting: data
+            meeting: data,
+            availabilities: availabilities
         }
     };
 }

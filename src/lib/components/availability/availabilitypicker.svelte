@@ -21,7 +21,7 @@
      * @type {Date[]}
      * array of dates selected from the availability picker
     */
-    let selectedSlots = [];
+    export let selectedSlots = [];
     
 
     const numPeriods = (endHour-startHour) * 2; // number of 30-minute periods in the given timeframe
