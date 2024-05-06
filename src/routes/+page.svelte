@@ -1,12 +1,6 @@
 <script>
     import { Button } from "$lib/components/ui/button";
-    import { supabase } from "../supabaseClient";
-
-    let user = supabase.auth.getUser();
-
-    supabase.auth.onAuthStateChange((event, session) => {
-        user = session?.user;
-    });
+    import { user } from "$lib/userStore";
 </script>
 
 <div class="flex flex-row h-screen items-center">
@@ -15,11 +9,10 @@
         <h3 class="text-xl">Meeting organization made easy.</h3>
         <div class="flex flex-row space-x-2">
             <Button href="/organize">Organize</Button>
-            {#if user}
+            {#if $user}
                 <Button href="/profile" variant="outline">Profile</Button>
                 <Button href="/logout" variant="outline">Log out</Button>
-            {/if}
-            {#if !user}
+            {:else}
                 <Button href="/register" variant='outline'>Register</Button>
                 <Button href="/login" variant='outline'>Login</Button>
             {/if}
