@@ -9,6 +9,7 @@
     let meeting;
     let availabilities;
     let addMode = false;
+    let cellColors = [];
     
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
@@ -24,22 +25,50 @@
     let startHour = parseInt(meeting.MinTime.split(":")[0]);
     let endHour = parseInt(meeting.MaxTime.split(":")[0]);
     let names = availabilities.map((/** @type {any} */ availability) => availability.username);
-
+    
     // TODO: handle logged in user
     let availabilitySelectionData = {
         username: "",
         datetimes: [],
     }
+    
+    
+    // fetch the saved availabilities and fill in the availability component accordingly
+    populateSavedAvailabilities(names);
 
-    function populateSavedAvailabilities() {
-        if(!addMode) {
-             availabilities.forEach(function(availability) {
-                availability.datetimes.forEach(function(timeSlot) {
-                    availabilitySelectionData.datetimes.push(new Date(timeSlot));
-                })
-             })
+    function populateSavedAvailabilities(nameList) {
+        getCellColors(nameList);
+        availabilities.forEach(function(availability) {
+            availability.datetimes.forEach(function(timeSlot) {
+                availabilitySelectionData.datetimes.push(new Date(timeSlot));
+            })
+        })
+    }
+
+    function getCellColors(nameList) {
+        // color calculation
+        let cappedNumResponses = Math.min(nameList.length, 10);
+
+        let lightColor = "#eff6ff";
+        let darkColor = "#172554";
+
+        let step = 1 / cappedNumResponses;
+        
+        let newCellColors = [];
+
+        for (let i = 0; i < cappedNumResponses; i++) {
+            let darkness = step * i;
+            let r = Math.round(parseInt(lightColor.slice(1, 3), 16) * (1 - darkness) + parseInt(darkColor.slice(1, 3), 16) * darkness);
+            let g = Math.round(parseInt(lightColor.slice(3, 5), 16) * (1 - darkness) + parseInt(darkColor.slice(3, 5), 16) * darkness);
+            let b = Math.round(parseInt(lightColor.slice(5, 7), 16) * (1 - darkness) + parseInt(darkColor.slice(5, 7), 16) * darkness);
+            let color = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            newCellColors.push(color);
         }
-    }     
+        newCellColors.unshift("none");
+
+        cellColors = newCellColors;
+    }
+    
     function handleGuestMode(event) {
         console.log(event.detail);
         clearFields();
@@ -51,11 +80,15 @@
         if (availabilitySelectionData.username === "") {
             console.error("No username provided");
             addMode = false;
+            clearFields();
+            refetchAvailabilities();
             return;
         } 
         if (availabilitySelectionData.datetimes.length === 0) {
             console.error("No datetimes provided");
             addMode = false;
+            clearFields();
+            refetchAvailabilities();
             return;
         }
         const { data, error } = await supabase
@@ -72,10 +105,10 @@
             console.error(error);
         } else {
             console.log(data[0]);
-            refetchAvailabilities();
+            addMode = false;
             clearFields();
+            refetchAvailabilities();
         }
-        addMode = false;
     }
 
     function clearFields() {
@@ -94,11 +127,10 @@
             console.log(data);
             availabilities = data;
             names = availabilities.map((/** @type {any} */ availability) => availability.username);
-            populateSavedAvailabilities(); // this doesn't seem to do anything
+            populateSavedAvailabilities(names); // this doesn't seem to do anything
         }
     }
 
-    populateSavedAvailabilities();
 
 </script>
 
@@ -124,7 +156,9 @@
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96 overflow-y-scroll">
-                <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} numResponses={names.length} bind:addMode={addMode} />
+                {#key availabilities}
+                    <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
+                {/key}
             </div>
             <div class="flex flex-col gap-y-4">        
                 <h3 class="text-2xl font-medium">Responders ({names.length})</h3>

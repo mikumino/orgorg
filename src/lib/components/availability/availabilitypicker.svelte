@@ -4,7 +4,6 @@
      */
     export let startHour;
     export let endHour;
-    export let numResponses;
     
     /**
      * @type {Date[]}
@@ -24,27 +23,10 @@
      */
     export let selectedSlots = [];
 
-    // color calculation
-    let cappedNumResponses = Math.min(numResponses, 10);
-    
-    let lightColor = "#eff6ff";
-    let darkColor = "#172554";
-
-    let step = 1 / cappedNumResponses;
-
-    let cellColors = [];
-
-    for (let i = 0; i < cappedNumResponses; i++) {
-        let darkness = step * i;
-        let r = Math.round(parseInt(lightColor.slice(1, 3), 16) * (1 - darkness) + parseInt(darkColor.slice(1, 3), 16) * darkness);
-        let g = Math.round(parseInt(lightColor.slice(3, 5), 16) * (1 - darkness) + parseInt(darkColor.slice(3, 5), 16) * darkness);
-        let b = Math.round(parseInt(lightColor.slice(5, 7), 16) * (1 - darkness) + parseInt(darkColor.slice(5, 7), 16) * darkness);
-        let color = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-        cellColors.push(color);
-    }
-
-    cellColors.unshift("none");
-
+    /**
+     * @type {String[]}
+    */
+    export let cellColors = [];
     
     const numPeriods = (endHour-startHour) * 2; // number of 30-minute periods in the given timeframe
     let timeSlots = Array.from({length : numPeriods}, (_, index) => { 
