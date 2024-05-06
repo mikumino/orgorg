@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
-import { supabase } from "./supabaseClient";
+import { supabase } from "../supabaseClient";
 
-export const user = writable(null);
+export const user = writable(supabase.auth.getUser());
 
 supabase.auth.onAuthStateChange((event, session) => {
     if(session){
@@ -11,3 +11,7 @@ supabase.auth.onAuthStateChange((event, session) => {
     }
     
 });
+
+export async function signOut() {
+    await supabase.auth.signOut();
+}
