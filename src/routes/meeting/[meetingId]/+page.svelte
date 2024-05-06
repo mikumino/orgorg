@@ -39,10 +39,12 @@
         console.log("Saving availability");
         if (availabilitySelectionData.username === "") {
             console.error("No username provided");
+            addMode = false;
             return;
         } 
         if (availabilitySelectionData.datetimes.length === 0) {
             console.error("No datetimes provided");
+            addMode = false;
             return;
         }
         const { data, error } = await supabase
@@ -60,9 +62,16 @@
         } else {
             console.log(data[0]);
             refetchAvailabilities();
+            clearFields();
         }
         addMode = false;
     }
+
+    function clearFields() {
+        availabilitySelectionData.username = "";
+        availabilitySelectionData.datetimes = [];
+    }
+
     async function refetchAvailabilities() {
         const { data, error } = await supabase
             .from('Availabilities')
