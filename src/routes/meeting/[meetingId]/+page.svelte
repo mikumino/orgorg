@@ -24,14 +24,25 @@
     let startHour = parseInt(meeting.MinTime.split(":")[0]);
     let endHour = parseInt(meeting.MaxTime.split(":")[0]);
     let names = availabilities.map((/** @type {any} */ availability) => availability.username);
+
     // TODO: handle logged in user
     let availabilitySelectionData = {
         username: "",
         datetimes: [],
     }
 
+    function populateSavedAvailabilities() {
+        if(!addMode) {
+             availabilities.forEach(function(availability) {
+                availability.datetimes.forEach(function(timeSlot) {
+                    availabilitySelectionData.datetimes.push(new Date(timeSlot));
+                })
+             })
+        }
+    }     
     function handleGuestMode(event) {
         console.log(event.detail);
+        clearFields();
         availabilitySelectionData.username = event.detail.name;
         addMode = true;
     }
@@ -83,8 +94,11 @@
             console.log(data);
             availabilities = data;
             names = availabilities.map((/** @type {any} */ availability) => availability.username);
+            populateSavedAvailabilities(); // this doesn't seem to do anything
         }
     }
+
+    populateSavedAvailabilities();
 
 </script>
 
@@ -110,7 +124,7 @@
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96 overflow-y-scroll">
-                <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} bind:addMode={addMode} />
+                <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} numResponses={names.length} bind:addMode={addMode} />
             </div>
             <div class="flex flex-col gap-y-4">        
                 <h3 class="text-2xl font-medium">Responders ({names.length})</h3>
