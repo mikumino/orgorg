@@ -24,7 +24,7 @@
     }
 </script>
 
-<div class="flex h-screen items-center justify-center">
+<div class="flex bg-slate-200 h-screen items-center justify-center">
     <Card.Root class="w-[350px] drop-shadow-lg">
         <form on:submit|preventDefault={handleLogin}>
         <Card.Header>
@@ -45,7 +45,7 @@
             <Card.Footer>
                 <div class="flex flex-col space-y-2">
                     <Button type="submit">Login</Button>
-                    <p class="text-slate-500">Don't have an account? <a class="underline" href="/login">Sign up</a></p>
+                    <p class="text-slate-500">Don't have an account? <a class="underline" href="/register">Sign up</a></p>
                 </div>
             </Card.Footer>
         </form>
