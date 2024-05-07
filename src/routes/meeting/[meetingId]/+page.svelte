@@ -5,12 +5,22 @@
     import AvailabilityLegend from "$lib/components/availability/availabilitylegend.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
 	import { supabase } from "../../../supabaseClient.ts";
+	import { onMount } from "svelte";
 
     export let data;
     let meeting;
     let availabilities;
     let addMode = false;
     let cellColors = [];
+    let userInfo;
+
+    onMount(async () => {
+        const user = await supabase.auth.getUser();
+        if (user) {
+            userInfo = user.data.user;
+        }
+    });
+
     
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
@@ -32,8 +42,7 @@
         username: "",
         datetimes: [],
     }
-    
-    
+        
     // fetch the saved availabilities and fill in the availability component accordingly
     populateSavedAvailabilities(names);
 
@@ -76,6 +85,14 @@
         availabilitySelectionData.username = event.detail.name;
         addMode = true;
     }
+
+    function handleUserMode() {
+        console.log("User mode");
+        clearFields();
+        availabilitySelectionData.username = userInfo.username;
+        addMode = true;
+    }
+
     async function saveAvailability() {
         console.log("Saving availability");
         if (availabilitySelectionData.username === "") {
@@ -151,7 +168,7 @@
                 {#if addMode}
                     <Button on:click={saveAvailability}>Save</Button>
                 {:else}
-                    <AvailabilityDialog on:addAsGuest={handleGuestMode}/>
+                    <AvailabilityDialog on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
                 {/if}
             </div>
         </div>
