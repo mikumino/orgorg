@@ -5,12 +5,31 @@
     import AvailabilityLegend from "$lib/components/availability/availabilitylegend.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
 	import { supabase } from "../../../supabaseClient.ts";
+	import { onMount } from "svelte";
 
     export let data;
     let meeting;
     let availabilities;
     let addMode = false;
     let cellColors = [];
+    let userInfo;
+
+    onMount(async () => {
+        const user = await supabase.auth.getUser();
+        let userData = user.data.user;
+
+        const { data, error } = await supabase
+            .from('users')
+            .select('id, email, username, display_name')
+            .eq('id', userData?.id)
+            .single();
+        if (error) {
+            console.error(error);
+        } else {
+            userInfo = data;
+        }
+    });
+
     
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
@@ -32,8 +51,7 @@
         username: "",
         datetimes: [],
     }
-    
-    
+        
     // fetch the saved availabilities and fill in the availability component accordingly
     populateSavedAvailabilities(names);
 
@@ -76,6 +94,14 @@
         availabilitySelectionData.username = event.detail.name;
         addMode = true;
     }
+
+    function handleUserMode() {
+        clearFields();
+        console.log(userInfo);
+        availabilitySelectionData.username = userInfo.display_name;
+        addMode = true;
+    }
+
     async function saveAvailability() {
         console.log("Saving availability");
         if (availabilitySelectionData.username === "") {
@@ -98,7 +124,8 @@
                 {
                     meeting_id: meeting.id,
                     username: availabilitySelectionData.username,
-                    datetimes: availabilitySelectionData.datetimes
+                    datetimes: availabilitySelectionData.datetimes,
+                    user_id: userInfo ? userInfo.id : null
                 }
             ])
             .select();
@@ -141,7 +168,7 @@
 
 <div class="h-screen">
     <Navbar />
-    <div class="flex flex-col items-center justify-center h-full gap-y-8 w-full max-w-screen-lg mx-auto">
+    <div class="flex flex-col items-center justify-center gap-y-8 w-full max-w-screen-lg mx-auto py-32">
         <div class="flex flex-row items-center w-5/6 justify-between">
             <div class="flex flex-col space-y-2 mr-12 w-96">
                 <h1 class="text-4xl font-bold">{meetingName}</h1>
@@ -151,20 +178,22 @@
                 {#if addMode}
                     <Button on:click={saveAvailability}>Save</Button>
                 {:else}
-                    <AvailabilityDialog on:addAsGuest={handleGuestMode}/>
+                    <AvailabilityDialog on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
                 {/if}
             </div>
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
-            <div class="flex flex-col basis-full shrink min-w-0 max-h-96 h-96">
-                <AvailabilityLegend cellColors={cellColors} numResponses={names.length} />
-                <div class="flex-row overflow-y-scroll">
+            <div class="flex flex-col basis-full min-w-0 grow">
+                {#if names.length > 1}
+                    <AvailabilityLegend cellColors={cellColors} numResponses={names.length} />
+                {/if}
+                <div class="flex-row max-h-full overflow-auto">
                     {#key availabilities}
                         <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
                     {/key}
                 </div>
             </div>
-            <div class="flex flex-col gap-y-4">        
+            <div class="flex flex-col gap-y-4 shrink text-wrap w-32">        
                 <h3 class="text-2xl font-medium">Responders ({names.length})</h3>
                 {#each names as name}
                 <p>
