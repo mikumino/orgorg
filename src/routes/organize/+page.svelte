@@ -17,6 +17,7 @@
 
     let formData = {
         meetingName: "",
+        meetingPassword: "",
         startTime: "",
         endTime: "",
         selectedDates: []
@@ -64,6 +65,7 @@
             .insert([
                 {
                     EventName: formData.meetingName,
+                    password: formData.meetingPassword,
                     MinTime: formData.startTime,
                     MaxTime: formData.endTime,
                     dates: formData.selectedDates
@@ -95,6 +97,10 @@
                     <div class="flex flex-col space-y-4 mb-4 w-96">
                         <Label for="meetingName">Meeting name</Label>
                         <Input type="text" id="meetingName" required bind:value={formData.meetingName}/>
+                    </div>
+                    <div class="flex flex-col space-y-4 mb-4 w-96">
+                        <Label for="meetingPassword">Meeting password (optional)</Label>
+                        <Input type="password" id="meetingPassword" bind:value={formData.meetingPassword}/>
                     </div>
                     <div class="flex flex-col space-y-4 mb-8">
                         <Label for="timeRange">Time range</Label>
