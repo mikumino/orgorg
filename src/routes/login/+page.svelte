@@ -1,5 +1,3 @@
-<!-- This is not functional right now, just UI -->
-
 <script>
     import { Button } from "$lib/components/ui/button";
     import * as Card from "$lib/components/ui/card";
