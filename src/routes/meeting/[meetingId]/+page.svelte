@@ -124,7 +124,8 @@
                 {
                     meeting_id: meeting.id,
                     username: availabilitySelectionData.username,
-                    datetimes: availabilitySelectionData.datetimes
+                    datetimes: availabilitySelectionData.datetimes,
+                    user_id: userInfo.id
                 }
             ])
             .select();
