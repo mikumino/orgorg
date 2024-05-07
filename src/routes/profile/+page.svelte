@@ -1,56 +1,45 @@
-
-
 <script lang="ts">
-    import { user } from '$lib/userStore.js'
     import { onMount } from 'svelte';
-    import type { AuthSession, User } from '@supabase/supabase-js';
-    import { supabase } from '$lib/supabaseClient';
+    import { supabase } from '../../supabaseClient';
   
-
-    let email: string | null = null
-    let avatarUrl: string | null = null
+    let isLoading: boolean = true;
+    let id = '';
+    let email = '';
   
-    onMount(() => {
-      
-      const unsubscribe = user.subscribe(async (currentUser: User | null) => {
-        if(currentUser){
-            const userId = currentUser?.id;
-            if(userId){
-                const { data, error } = await supabase
-                .from('users')
-                .select('email, avatar_url')
-                .eq('id', userId)
-                .single();
+    onMount(async () => {
+        const user = await supabase.auth.getUser();
+        const userData = user.data.user;
+        const { data, error } = await supabase
+          .from('users')
+          .select('id, email')
+          .eq('id', userData?.id)
+          .single();
 
-            if(error){
-                console.error('Error: ', error.message);
-            }else{
-                email = data?.email || null;
-                avatarUrl = data?.avatar_url || null
-            }
+        if (error) {
+            console.error(error);
+            } else {
+            id = data.id;
+            email = data.email;
         }
-            
-      }
+        isLoading = false;
     });
-    return () => {
-        unsubscribe();
-    }
-      
-});
+  </script>
   
-</script>
-  
-<div>
+  <div>
     <h1>Profile</h1>
-    {#if email}
+    {#if isLoading}
+      <p>Loading user data...</p>
+    {:else}
+      {#if id}
+        <p>User ID: {id}</p>
+      {:else}
+        <p>User ID not found</p>
+      {/if}
+      {#if email}
         <p>Email: {email}</p>
-    {:else}
+      {:else}
         <p>Email not found</p>
+      {/if}
     {/if}
-
-    {#if avatarUrl}
-        <img src={avatarUrl} alt="User avatar" />
-    {:else}
-        <p>No avatar found</p>
-    {/if}
-</div>
+  </div>
+  
