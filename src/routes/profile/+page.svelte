@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { supabase } from '../../supabaseClient';
+    import { goto } from '$app/navigation';
   
     let isLoading: boolean = true;
     let id = '';
@@ -10,6 +11,11 @@
   
     onMount(async () => {
         const user = await supabase.auth.getUser();
+        if (!user){
+          goto('/login');
+          return;
+        }
+
         const userData = user.data.user;
         const { data, error } = await supabase
           .from('users')
@@ -29,6 +35,7 @@
     });
   </script>
   
+ 
   <div>
     <h1>Profile</h1>
     {#if isLoading}
