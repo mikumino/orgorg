@@ -5,13 +5,15 @@
     let isLoading: boolean = true;
     let id = '';
     let email = '';
+    let username = '';
+    let displayName = '';
   
     onMount(async () => {
         const user = await supabase.auth.getUser();
         const userData = user.data.user;
         const { data, error } = await supabase
           .from('users')
-          .select('id, email')
+          .select('id, email, username, display_name')
           .eq('id', userData?.id)
           .single();
 
@@ -20,6 +22,8 @@
             } else {
             id = data.id;
             email = data.email;
+            username = data.username;
+            displayName = data.display_name;
         }
         isLoading = false;
     });
@@ -28,18 +32,12 @@
   <div>
     <h1>Profile</h1>
     {#if isLoading}
-      <p>Loading user data...</p>
+        <p>Loading user data...</p>
     {:else}
-      {#if id}
         <p>User ID: {id}</p>
-      {:else}
-        <p>User ID not found</p>
-      {/if}
-      {#if email}
         <p>Email: {email}</p>
-      {:else}
-        <p>Email not found</p>
-      {/if}
+        <p>Username: {username}</p>
+        <p>Display name: {displayName}</p>
     {/if}
   </div>
   
