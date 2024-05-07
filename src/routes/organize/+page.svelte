@@ -9,6 +9,7 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import Timepicker from "$lib/components/ui/timepicker/timepicker.svelte";
 	import { goto } from "$app/navigation";
+    import { user } from "$lib/userStore.js"
 
     let startTimeHour = 7;
     let startTimePeriod = "AM";
@@ -27,6 +28,7 @@
     $: formData.startTime = `${startTimeHour}:00 ${startTimePeriod}`;
     $: formData.endTime = `${endTimeHour}:00 ${endTimePeriod}`;
     async function createMeeting() {
+
         // error checking - this solution is rough and doesn't use the error functions or components that we have
         let errors = new Array();
         
@@ -68,7 +70,8 @@
                     password: formData.meetingPassword,
                     MinTime: formData.startTime,
                     MaxTime: formData.endTime,
-                    dates: formData.selectedDates
+                    dates: formData.selectedDates,
+                    creator_id: $user ? $user.id: null
                 }
             ])
             .select();

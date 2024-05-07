@@ -2,13 +2,22 @@
     import { onMount } from 'svelte';
     import { supabase } from '../../supabaseClient';
     import { goto } from '$app/navigation';
-  
+	
+    interface Meeting {
+      id: string;
+      EventName: string;
+      MinTime: string;
+      MaxTime: string;
+      dates: Date[];
+      password: string;
+      creator_id: string;
+    }
     let isLoading: boolean = true;
     let id = '';
     let email = '';
     let username = '';
     let displayName = '';
-  
+    let meetings: Meeting[] = [];
     onMount(async () => {
         const user = await supabase.auth.getUser();
         if (!user.data.user){
@@ -17,20 +26,28 @@
         }
 
         const userData = user.data.user;
-        const { data, error } = await supabase
+        const { data: userDataResponse, error: userError } = await supabase
           .from('users')
           .select('id, email, username, display_name')
           .eq('id', userData?.id)
           .single();
 
-        if (error) {
-            console.error(error);
-            } else {
-            id = data.id;
-            email = data.email;
-            username = data.username;
-            displayName = data.display_name;
+        if (userError) {
+            console.error(userError);
+          } else {
+            id = userDataResponse.id;
+            email = userDataResponse.email;
+            username = userDataResponse.username;
+            displayName = userDataResponse.display_name;
         }
+
+        const {data: meetingDataResponse, error: meetingError} = await supabase
+          .from('Meetings')
+          .select('*')
+          .eq('creator_id', user.data.user?.id);
+
+
+        meetings = meetingDataResponse ?? [];
         isLoading = false;
     });
   </script>
@@ -45,6 +62,16 @@
         <p>Email: {email}</p>
         <p>Username: {username}</p>
         <p>Display name: {displayName}</p>
+        <h2>meetings created by user</h2>
+        {#if meetings.length > 0}
+          <ul>
+            {#each meetings as meeting}
+              <li>{meeting.EventName}</li>
+            {/each}
+          </ul>
+        {:else}
+          <p>No meetings found.</p>
+        {/if}
     {/if}
   </div>
   
