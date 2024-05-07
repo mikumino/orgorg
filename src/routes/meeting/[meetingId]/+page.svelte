@@ -16,8 +16,17 @@
 
     onMount(async () => {
         const user = await supabase.auth.getUser();
-        if (user) {
-            userInfo = user.data.user;
+        let userData = user.data.user;
+
+        const { data, error } = await supabase
+            .from('users')
+            .select('id, email, username, display_name')
+            .eq('id', userData?.id)
+            .single();
+        if (error) {
+            console.error(error);
+        } else {
+            userInfo = data;
         }
     });
 
@@ -87,9 +96,9 @@
     }
 
     function handleUserMode() {
-        console.log("User mode");
         clearFields();
-        availabilitySelectionData.username = userInfo.username;
+        console.log(userInfo);
+        availabilitySelectionData.username = userInfo.display_name;
         addMode = true;
     }
 
