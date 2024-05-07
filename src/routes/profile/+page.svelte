@@ -11,7 +11,7 @@
   
     onMount(async () => {
         const user = await supabase.auth.getUser();
-        if (!user){
+        if (!user.data.user){
           goto('/login');
           return;
         }
