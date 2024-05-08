@@ -1,4 +1,4 @@
-import { supabase } from "../../../supabaseServerClient";
+import { supabase } from "../../../supabaseClient";
 
 export async function load({ params }) {
     const { meetingId } = params;
