@@ -15,6 +15,7 @@
     let meeting;
     let availabilities;
     let addMode = false;
+    let showError = false;
     let passwordAuthenticated = false;
     let passwordIncorrect = false;
     let meetingPass;
@@ -120,13 +121,22 @@
     
     function handleGuestMode(event) {
         let existingAvailability = availabilities.find(availability => availability.username === event.detail.name);
+        console.log(existingAvailability)
+        if (existingAvailability && existingAvailability.user_id) {
+            // there's a user with the same name, do not allow adding or editing
+            showError = true;
+            addMode = false;
+            return;
+        }
         if (existingAvailability) {
+            showError = false;
             // treat as edit mode
             availabilitySelectionData.username = event.detail.name;
             availabilitySelectionData.datetimes = existingAvailability.datetimes;
             console.log(availabilitySelectionData.datetimes);
             addMode = true;
         } else {
+            showError = false;
             console.log(event.detail);
             clearFields();
             availabilitySelectionData.username = event.detail.name;
@@ -353,7 +363,7 @@
                 {#if addMode}
                     <Button on:click={saveAvailability}>Save</Button>
                 {:else if !userInfo}
-                    <AvailabilityDialog on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
+                    <AvailabilityDialog bind:showError={showError} on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
                 {:else}
                     <Button on:click={handleUserMode}><Pencil class="mr-2 w-4 h-4"></Pencil> Add/Edit as {userInfo.display_name}</Button>
                 {/if}

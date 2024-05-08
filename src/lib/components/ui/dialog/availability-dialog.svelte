@@ -6,6 +6,7 @@
     import Label from "../label/label.svelte";
     import { Pencil } from 'lucide-svelte';
 
+    export let showError = false;
     export let name = "";
     const dispatch = createEventDispatcher();
     
@@ -29,6 +30,9 @@
             <form class="flex flex-col" on:submit|preventDefault={addAsGuest}>
                 <Label class="mb-4" for="name">Name</Label>
                 <Input class="mb-6" id="name" type="text" required bind:value={name}  />
+                {#if showError}
+                    <p class="text-red-500">This name is already taken. Please enter a different name.</p>
+                {/if}
                 <Button type="submit" variant="outline">Add/Edit as Guest</Button>
             </form>
         </div>
