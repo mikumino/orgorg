@@ -64,6 +64,9 @@
      * @param {Date} timeSlot
     */
     function isCellSelected(timeSlot) { // returns true if the date for the given cell is already in the array
+        if (typeof selectedSlots[0] === 'string') {
+            selectedSlots = selectedSlots.map(date => new Date(date));
+        }
         return selectedSlots.find(date => date.getTime() === timeSlot.getTime());
     }
 

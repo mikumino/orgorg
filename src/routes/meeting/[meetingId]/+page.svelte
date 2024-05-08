@@ -6,11 +6,15 @@
     import Button from "$lib/components/ui/button/button.svelte";
 	import { supabase } from "../../../supabaseClient.ts";
 	import { onMount } from "svelte";
+    import { Pencil } from "lucide-svelte";
 
     export let data;
     let meeting;
     let availabilities;
     let addMode = false;
+    // let editMode = false;
+    // let selectedSlotsEdit = [];
+    let selectedAvailability = null;
     let cellColors = [];
     let userInfo;
     let hoveredCell = null;
@@ -109,17 +113,36 @@
     }
     
     function handleGuestMode(event) {
-        console.log(event.detail);
-        clearFields();
-        availabilitySelectionData.username = event.detail.name;
-        addMode = true;
+        let existingAvailability = availabilities.find(availability => availability.username === event.detail.name);
+        if (existingAvailability) {
+            // treat as edit mode
+            availabilitySelectionData.username = event.detail.name;
+            availabilitySelectionData.datetimes = existingAvailability.datetimes;
+            console.log(availabilitySelectionData.datetimes);
+            addMode = true;
+        } else {
+            console.log(event.detail);
+            clearFields();
+            availabilitySelectionData.username = event.detail.name;
+            addMode = true;
+        }
     }
 
     function handleUserMode() {
-        clearFields();
-        console.log(userInfo);
-        availabilitySelectionData.username = userInfo.display_name;
-        addMode = true;
+        let existingAvailability = availabilities.find(availability => availability.user_id === userInfo.id);
+        console.log(existingAvailability)
+        if (existingAvailability) {
+            // treat as edit mode
+            availabilitySelectionData.username = userInfo.display_name;
+            availabilitySelectionData.datetimes = existingAvailability.datetimes;
+            console.log(availabilitySelectionData.datetimes);
+            addMode = true;
+        } else {
+            clearFields();
+            console.log(userInfo);
+            availabilitySelectionData.username = userInfo.display_name;
+            addMode = true;
+        }
     }
 
     async function saveAvailability() {
@@ -138,24 +161,82 @@
             refetchAvailabilities();
             return;
         }
-        const { data, error } = await supabase
-            .from('Availabilities')
-            .insert([
-                {
-                    meeting_id: meeting.id,
-                    username: availabilitySelectionData.username,
-                    datetimes: availabilitySelectionData.datetimes,
-                    user_id: userInfo ? userInfo.id : null
+        console.log(availabilitySelectionData.datetimes);
+        // if logged in, use user_id
+        if (userInfo) {
+            let existingAvailability = availabilities.find(availability => availability.user_id === userInfo.id);
+            if (existingAvailability) {
+                existingAvailability.datetimes = availabilitySelectionData.datetimes;
+                const { data, error } = await supabase
+                    .from('Availabilities')
+                    .upsert([existingAvailability]);
+                if (error) {
+                    console.error(error);
+                    return;
+                } else {
+                    console.log(data);
+                    addMode = false;
+                    clearFields();
+                    refetchAvailabilities();
+                    return;
                 }
-            ])
-            .select();
-        if (error) {
-            console.error(error);
+            } else {
+                const { data, error } = await supabase
+                    .from('Availabilities')
+                    .insert([
+                        {
+                            meeting_id: meeting.id,
+                            user_id: userInfo.id,
+                            username: userInfo.display_name,
+                            datetimes: availabilitySelectionData.datetimes,
+                        }
+                    ]);
+                if (error) {
+                    console.error(error);
+                } else {
+                    console.log(data);
+                    addMode = false;
+                    clearFields();
+                    refetchAvailabilities();
+                }
+            }
+            return;
+        }
+
+        // insert if new, update if existing
+        let existingAvailability = availabilities.find(availability => availability.username === availabilitySelectionData.username);
+        console.log(existingAvailability);
+        if (existingAvailability) {
+            existingAvailability.datetimes = availabilitySelectionData.datetimes;
+            const { data, error } = await supabase
+                .from('Availabilities')
+                .upsert([existingAvailability]);
+            if (error) {
+                console.error(error);
+            } else {
+                console.log(data);
+                addMode = false;
+                clearFields();
+                refetchAvailabilities();
+            }
         } else {
-            console.log(data[0]);
-            addMode = false;
-            clearFields();
-            refetchAvailabilities();
+            const { data, error } = await supabase
+                .from('Availabilities')
+                .insert([
+                    {
+                        meeting_id: meeting.id,
+                        username: availabilitySelectionData.username,
+                        datetimes: availabilitySelectionData.datetimes,
+                    }
+                ]);
+            if (error) {
+                console.error(error);
+            } else {
+                console.log(data);
+                addMode = false;
+                clearFields();
+                refetchAvailabilities();
+            }
         }
     }
 
@@ -179,7 +260,43 @@
         }
     }
 
+    // function toggleEditMode(){
+    //     editMode != editMode;
+    //      if(!editMode){
+    //         addMode = false;
+    //         clearFields();
+    //      }
+    // }
 
+    function selectAvailability(index){
+        editMode = true;
+        selectedAvailability = availabilities[index];
+    }
+
+    // async function saveChanges(){
+    //     if(!selectedAvailability){
+    //         console.error("No availability selected for editing");
+    //         return;
+    //     }
+
+    //     selectedAvailability.datetimes = availabilitySelectionData.datetimes;
+
+    //     const { data, error } = await supabase
+    //         .from('Availabilities')
+    //         .upsert([selectedAvailability]);
+
+    //     if(error){
+    //         console.error("Error saving changes:", error.message);
+
+    //     }else{
+    //         console.log("Changes saved successfully");
+    //         editMode = false;
+    //         selectedAvailability = null;
+    //         clearFields();
+
+    //         refetchAvailabilities();
+    //     }
+    // }
 </script>
 
 <style>
@@ -197,14 +314,16 @@
             <div class="flex flex-col">
                 {#if addMode}
                     <Button on:click={saveAvailability}>Save</Button>
-                {:else}
+                {:else if !userInfo}
                     <AvailabilityDialog on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
+                {:else}
+                    <Button on:click={handleUserMode}><Pencil class="mr-2 w-4 h-4"></Pencil> Add/Edit as {userInfo.display_name}</Button>
                 {/if}
             </div>
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full min-w-0 grow">
-                {#if names.length > 1}
+                {#if numResponses > 1}
                     <AvailabilityLegend cellColors={cellColors} numResponses={numResponses} />
                 {/if}
                 <div class="flex-row max-h-full overflow-auto">
@@ -220,6 +339,8 @@
                     {name}
                 </p>
                 {/each}
+                <!-- <Button on:click={toggleEditMode}>Edit Availability</Button>
+                <Button on:click={saveChanges}>Save changes</Button> -->
             </div>
         </div>
     </div>
