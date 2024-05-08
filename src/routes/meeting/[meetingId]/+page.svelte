@@ -69,7 +69,7 @@
         let cappedNumResponses = Math.min(nameList.length, 10);
 
         let lightColor = "#dbeafe";
-        let darkColor = "#172554";
+        let darkColor = "#5b70fb";
 
         let step = 1 / cappedNumResponses;
         
