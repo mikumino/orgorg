@@ -7,6 +7,7 @@
     import { supabase } from "../../supabaseClient";
 
     let loading = false;
+    let incorrectCredentials = false;
     let email, password;
 
     const handleLogin = async () => {
@@ -17,9 +18,12 @@
             if (error) throw error;
         } catch (error) {
             console.error("Error logging in:", error.message);
+            incorrectCredentials = true;
         } finally {
             loading = false;
-            goto("/");
+            if (!incorrectCredentials) {
+                goto("/");
+            }
         }
     }
 </script>
@@ -37,6 +41,9 @@
                         <Input type="email" id="email" bind:value={email} />
                         <Label for="password">Password</Label>
                         <Input type="password" id="password" bind:value={password} />
+                        {#if incorrectCredentials}
+                            <p class="text-red-500">Incorrect email or password</p>
+                        {/if}
                     </div>
                     <div class="flex flex-row">
                     </div>
