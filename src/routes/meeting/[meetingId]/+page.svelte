@@ -13,6 +13,7 @@
     let addMode = false;
     let cellColors = [];
     let userInfo;
+    let hoveredCell = null;
 
     onMount(async () => {
         const user = await supabase.auth.getUser();
@@ -30,6 +31,13 @@
         }
     });
 
+    $: {
+        if(hoveredCell !== null) {
+            names = availabilities.filter(availability => hasDate(availability.datetimes, hoveredCell)).map(availability => availability.username);
+        } else {
+            names = availabilities.map(availability => availability.username);
+        }
+    }
     
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
@@ -54,6 +62,17 @@
         
     // fetch the saved availabilities and fill in the availability component accordingly
     populateSavedAvailabilities(names);
+
+    /**
+     * Given an array of dates and a date, returns true if the date is in the array
+     * Uses timestamps to compare dates by value RAHHHH
+     * shouldve moved this to a utils file lol ive used this in 3 files now
+	 * @param {{getTime: () => number;}} date
+	 * @param {any[]} array
+	 */
+     function hasDate(array, date) {
+        return array.find(arrayDate => Date.parse(arrayDate) === date.getTime());
+    }
 
     function populateSavedAvailabilities(nameList) {
         getCellColors(nameList);
@@ -189,7 +208,7 @@
                 {/if}
                 <div class="flex-row max-h-full overflow-auto">
                     {#key availabilities}
-                        <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
+                        <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} bind:hoveredCell={hoveredCell}/>
                     {/key}
                 </div>
             </div>

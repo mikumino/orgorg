@@ -28,6 +28,8 @@
     */
     export let cellColors = [];
 
+    export let hoveredCell = null;
+
     let firstRangeSlot = null;
     let secondRangeSlot = null;
 
@@ -114,6 +116,7 @@
     }
 
     function handleMouseOver (slot) {
+        hoveredCell = slot;
         if (firstRangeSlot == null) {
             return;
         } else if (slot < firstRangeSlot) {
@@ -125,6 +128,10 @@
         } else {
             return;
         }
+    }
+
+    function handleMouseLeave() {
+        hoveredCell = null;
     }
 
     function getSlotsBetween(firstSlot, secondSlot) {
@@ -190,7 +197,7 @@
                 </div>
                 {#each timeSlots as period, index}
                     {@const cellDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(period.split(':')[0]), parseInt(period.split(':')[1]))}
-                    <button on:mousedown={() => handleMouseDown(cellDate)} on:mouseup={() => handleMouseUp(cellDate)} on:mouseover={() => handleMouseOver(cellDate)} on:focus={() => handleMouseOver(cellDate)} class={`flex flex-row px-4 justify-center cursor-pointer select-none ${index % 2 !== 0 ? 'border-b-2' : ''} ${ isCellSelected(cellDate) ? (addMode ? 'bg-blue-200 hover:bg-blue-300' : ` hover:bg-blue-300`) : 'hover:bg-blue-100'} ${hasDate(slotRangeSelection, cellDate) ? 'bg-blue-200' : ''}`}
+                    <button on:mouseleave={handleMouseLeave} on:mousedown={() => handleMouseDown(cellDate)} on:mouseup={() => handleMouseUp(cellDate)} on:mouseover={() => handleMouseOver(cellDate)} on:focus={() => handleMouseOver(cellDate)} class={`flex flex-row px-4 justify-center cursor-pointer select-none ${index % 2 !== 0 ? 'border-b-2' : ''} ${ isCellSelected(cellDate) ? (addMode ? 'bg-blue-200 hover:bg-blue-300' : ` hover:bg-blue-300`) : 'hover:bg-blue-100'} ${hasDate(slotRangeSelection, cellDate) ? 'bg-blue-200' : ''}`}
                     style="background-color: {cellColors[numberCellSelected(cellDate)]}; border-color: {cellColors[numberCellSelected(cellDate)]};"
                     title="{date.getMonth() + 1}/{date.getDate()} @ {period}">
                         <br/>
