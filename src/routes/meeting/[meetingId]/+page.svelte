@@ -129,10 +129,20 @@
     }
 
     function handleUserMode() {
-        clearFields();
-        console.log(userInfo);
-        availabilitySelectionData.username = userInfo.display_name;
-        addMode = true;
+        let existingAvailability = availabilities.find(availability => availability.user_id === userInfo.id);
+        console.log(existingAvailability)
+        if (existingAvailability) {
+            // treat as edit mode
+            availabilitySelectionData.username = userInfo.display_name;
+            availabilitySelectionData.datetimes = existingAvailability.datetimes;
+            console.log(availabilitySelectionData.datetimes);
+            addMode = true;
+        } else {
+            clearFields();
+            console.log(userInfo);
+            availabilitySelectionData.username = userInfo.display_name;
+            addMode = true;
+        }
     }
 
     async function saveAvailability() {
@@ -152,6 +162,47 @@
             return;
         }
         console.log(availabilitySelectionData.datetimes);
+        // if logged in, use user_id
+        if (userInfo) {
+            let existingAvailability = availabilities.find(availability => availability.user_id === userInfo.id);
+            if (existingAvailability) {
+                existingAvailability.datetimes = availabilitySelectionData.datetimes;
+                const { data, error } = await supabase
+                    .from('Availabilities')
+                    .upsert([existingAvailability]);
+                if (error) {
+                    console.error(error);
+                    return;
+                } else {
+                    console.log(data);
+                    addMode = false;
+                    clearFields();
+                    refetchAvailabilities();
+                    return;
+                }
+            } else {
+                const { data, error } = await supabase
+                    .from('Availabilities')
+                    .insert([
+                        {
+                            meeting_id: meeting.id,
+                            user_id: userInfo.id,
+                            username: userInfo.display_name,
+                            datetimes: availabilitySelectionData.datetimes,
+                        }
+                    ]);
+                if (error) {
+                    console.error(error);
+                } else {
+                    console.log(data);
+                    addMode = false;
+                    clearFields();
+                    refetchAvailabilities();
+                }
+            }
+            return;
+        }
+
         // insert if new, update if existing
         let existingAvailability = availabilities.find(availability => availability.username === availabilitySelectionData.username);
         console.log(existingAvailability);
