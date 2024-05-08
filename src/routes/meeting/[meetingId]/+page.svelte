@@ -112,10 +112,19 @@
     }
     
     function handleGuestMode(event) {
-        console.log(event.detail);
-        clearFields();
-        availabilitySelectionData.username = event.detail.name;
-        addMode = true;
+        let existingAvailability = availabilities.find(availability => availability.username === event.detail.name);
+        if (existingAvailability) {
+            // treat as edit mode
+            availabilitySelectionData.username = event.detail.name;
+            availabilitySelectionData.datetimes = existingAvailability.datetimes;
+            console.log(availabilitySelectionData.datetimes);
+            addMode = true;
+        } else {
+            console.log(event.detail);
+            clearFields();
+            availabilitySelectionData.username = event.detail.name;
+            addMode = true;
+        }
     }
 
     function handleUserMode() {
@@ -141,24 +150,41 @@
             refetchAvailabilities();
             return;
         }
-        const { data, error } = await supabase
-            .from('Availabilities')
-            .insert([
-                {
-                    meeting_id: meeting.id,
-                    username: availabilitySelectionData.username,
-                    datetimes: availabilitySelectionData.datetimes,
-                    user_id: userInfo ? userInfo.id : null
-                }
-            ])
-            .select();
-        if (error) {
-            console.error(error);
+        console.log(availabilitySelectionData.datetimes);
+        // insert if new, update if existing
+        let existingAvailability = availabilities.find(availability => availability.username === availabilitySelectionData.username);
+        console.log(existingAvailability);
+        if (existingAvailability) {
+            existingAvailability.datetimes = availabilitySelectionData.datetimes;
+            const { data, error } = await supabase
+                .from('Availabilities')
+                .upsert([existingAvailability]);
+            if (error) {
+                console.error(error);
+            } else {
+                console.log(data);
+                addMode = false;
+                clearFields();
+                refetchAvailabilities();
+            }
         } else {
-            console.log(data[0]);
-            addMode = false;
-            clearFields();
-            refetchAvailabilities();
+            const { data, error } = await supabase
+                .from('Availabilities')
+                .insert([
+                    {
+                        meeting_id: meeting.id,
+                        username: availabilitySelectionData.username,
+                        datetimes: availabilitySelectionData.datetimes,
+                    }
+                ]);
+            if (error) {
+                console.error(error);
+            } else {
+                console.log(data);
+                addMode = false;
+                clearFields();
+                refetchAvailabilities();
+            }
         }
     }
 
