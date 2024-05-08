@@ -40,9 +40,9 @@
         let startTimeRaw = startTimeHour;
         let endTimeRaw = endTimeHour
         // convert 12h PM times to 24h
-        if(startTimePeriod == "PM")
+        if(startTimePeriod == "PM" && startTimeHour != 12)
             startTimeRaw += 12;
-        if(endTimePeriod == "PM")
+        if(endTimePeriod == "PM" && endTimeHour != 12)
             endTimeRaw += 12;
         if(endTimeRaw - startTimeRaw <= 0) { // can't set times to be the same or backwards
             errors.push("Please enter a valid time range.");
