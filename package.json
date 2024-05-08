@@ -44,6 +44,7 @@
 		"clsx": "^2.1.0",
 		"dotenv": "^16.4.5",
 		"formsnap": "^0.5.1",
+		"js-sha256": "^0.11.0",
 		"lucide-svelte": "^0.344.0",
 		"shadcn-svelte": "^0.10.5",
 		"sveltekit-superforms": "^2.7.0",
