@@ -27,13 +27,13 @@
         </Dialog.Header>
         <div class="flex flex-col my-6 justify-center">
             <div>
-                <Button on:click={addAsUser} class="w-full">Add as User</Button>
+                <Button on:click={addAsUser} class="w-full">Add/Edit as User</Button>
                 <p class="text-center my-6">or</p>
             </div>
             <form class="flex flex-col" on:submit|preventDefault={addAsGuest}>
                 <Label class="mb-4" for="name">Name</Label>
                 <Input class="mb-6" id="name" type="text" required bind:value={name}  />
-                <Button type="submit" variant="outline">Add as Guest</Button>
+                <Button type="submit" variant="outline">Add/Edit as Guest</Button>
             </form>
         </div>
     </Dialog.Content>
