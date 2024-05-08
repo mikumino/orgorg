@@ -11,8 +11,8 @@
     let meeting;
     let availabilities;
     let addMode = false;
-    let editMode = false;
-    let selectedSlotsEdit = [];
+    // let editMode = false;
+    // let selectedSlotsEdit = [];
     let selectedAvailability = null;
     let cellColors = [];
     let userInfo;
@@ -182,43 +182,43 @@
         }
     }
 
-    function toggleEditMode(){
-        editMode != editMode;
-         if(!editMode){
-            addMode = false;
-            clearFields();
-         }
-    }
+    // function toggleEditMode(){
+    //     editMode != editMode;
+    //      if(!editMode){
+    //         addMode = false;
+    //         clearFields();
+    //      }
+    // }
 
     function selectAvailability(index){
         editMode = true;
         selectedAvailability = availabilities[index];
     }
 
-    async function saveChanges(){
-        if(!selectedAvailability){
-            console.error("No availability selected for editing");
-            return;
-        }
+    // async function saveChanges(){
+    //     if(!selectedAvailability){
+    //         console.error("No availability selected for editing");
+    //         return;
+    //     }
 
-        selectedAvailability.datetimes = availabilitySelectionData.datetimes;
+    //     selectedAvailability.datetimes = availabilitySelectionData.datetimes;
 
-        const { data, error } = await supabase
-            .from('Availabilities')
-            .upsert([selectedAvailability]);
+    //     const { data, error } = await supabase
+    //         .from('Availabilities')
+    //         .upsert([selectedAvailability]);
 
-        if(error){
-            console.error("Error saving changes:", error.message);
+    //     if(error){
+    //         console.error("Error saving changes:", error.message);
 
-        }else{
-            console.log("Changes saved successfully");
-            editMode = false;
-            selectedAvailability = null;
-            clearFields();
+    //     }else{
+    //         console.log("Changes saved successfully");
+    //         editMode = false;
+    //         selectedAvailability = null;
+    //         clearFields();
 
-            refetchAvailabilities();
-        }
-    }
+    //         refetchAvailabilities();
+    //     }
+    // }
 </script>
 
 <style>
@@ -259,8 +259,8 @@
                     {name}
                 </p>
                 {/each}
-                <Button on:click={toggleEditMode}>Edit Availability</Button>
-                <Button on:click={saveChanges}>Save changes</Button>
+                <!-- <Button on:click={toggleEditMode}>Edit Availability</Button>
+                <Button on:click={saveChanges}>Save changes</Button> -->
             </div>
         </div>
     </div>

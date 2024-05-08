@@ -4,6 +4,7 @@
 	import Button from "../button/button.svelte";
     import Input from "../input/input.svelte";
     import Label from "../label/label.svelte";
+    import { Pencil } from 'lucide-svelte';
 
     export let name = "";
     const dispatch = createEventDispatcher();
@@ -18,11 +19,11 @@
 
 <Dialog.Root>
     <Dialog.Trigger>
-        <Button>Add Availability</Button>
+        <Button><Pencil class="mr-2 w-4 h-4" /> Add/Edit Availability</Button>
     </Dialog.Trigger>
     <Dialog.Content class="sm:max-w-[425px]">
         <Dialog.Header>
-            <Dialog.Title class="text-2xl">Add Availability</Dialog.Title>
+            <Dialog.Title class="text-2xl">Add/Edit Availability</Dialog.Title>
         </Dialog.Header>
         <div class="flex flex-col my-6 justify-center">
             <div>
