@@ -164,8 +164,8 @@
 <svelte:document on:mouseup={() => handleMouseUp(null)} />
 
 {#key selectedSlots}
-    <div class="flex text-xs">
-        <div class="flex flex-col gap-y-0 text-gray-500" style="font-size: 10px">
+    <div class="flex">
+        <div class="flex flex-col gap-y-0 text-gray-500">
             <div class="flex flex-row border-b-2">
                 <br/>
                 <br/>

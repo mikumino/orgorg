@@ -168,7 +168,7 @@
 
 <div class="h-screen">
     <Navbar />
-    <div class="flex flex-col items-center justify-center gap-y-8 w-full max-w-screen-lg mx-auto py-32">
+    <div class="flex flex-col items-center justify-center gap-y-8 w-full max-w-screen-2xl mx-auto py-32">
         <div class="flex flex-row items-center w-5/6 justify-between">
             <div class="flex flex-col space-y-2 mr-12 w-96">
                 <h1 class="text-4xl font-bold">{meetingName}</h1>
