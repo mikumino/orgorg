@@ -7,7 +7,7 @@
 </script>
 
 <div class="flex flex-row h-screen mx-auto max-w-screen-xl justify-center items-center">
-    <div class="flex flex-col w-fit ml-24 space-y-6 mr-28">
+    <div class="flex flex-col w-fit space-y-6 mr-28">
         <h1 class="text-6xl font-bold">OrgOrg</h1>
         <h3 class="text-xl">Meeting organization made easy.</h3>
         <div class="flex flex-row space-x-2">
