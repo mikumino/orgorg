@@ -9,6 +9,9 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import Timepicker from "$lib/components/ui/timepicker/timepicker.svelte";
 	import { goto } from "$app/navigation";
+    import Terminal from "lucide-svelte/icons/terminal";
+    import CircleAlert from "lucide-svelte/icons/alert-circle";
+    import * as Alert from "$lib/components/ui/alert/index.ts";
 
     let startTimeHour = 7;
     let startTimePeriod = "AM";
@@ -21,21 +24,25 @@
         endTime: "",
         selectedDates: []
     };
+    
 
     // turn time into iso string
     $: formData.startTime = `${startTimeHour}:00 ${startTimePeriod}`;
     $: formData.endTime = `${endTimeHour}:00 ${endTimePeriod}`;
+
+    let errors = [];
+
     async function createMeeting() {
         // error checking - this solution is rough and doesn't use the error functions or components that we have
-        let errors = new Array();
+        errors = [];
         
         // time checking
         let startTimeRaw = startTimeHour;
         let endTimeRaw = endTimeHour
         // convert 12h PM times to 24h
-        if(startTimePeriod == "PM")
+        if(startTimePeriod == "PM" && startTimeHour != 12)
             startTimeRaw += 12;
-        if(endTimePeriod == "PM")
+        if(endTimePeriod == "PM" && endTimeHour != 12)
             endTimeRaw += 12;
         if(endTimeRaw - startTimeRaw <= 0) { // can't set times to be the same or backwards
             errors.push("Please enter a valid time range.");
@@ -53,8 +60,6 @@
 
         // halt function if any errors are present
         if(errors.length != 0) {
-            // todo: display errors in an elegant fashion
-            alert(JSON.stringify(errors));
             return;
         }
         
@@ -80,6 +85,17 @@
     }
 
 </script>
+
+<!-- display errors in an elegant fashion -->
+{#if errors.length > 0}
+  <Alert.Root variant="destructive">
+    <CircleAlert class="h-4 w-4" />
+    <Alert.Title>Error!</Alert.Title>
+    {#each errors as error (error)}
+      <Alert.Description>{error}</Alert.Description>
+    {/each}
+  </Alert.Root>
+{/if}
 
 <style>
     
