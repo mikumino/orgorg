@@ -7,11 +7,17 @@
 	import { supabase } from "../../../supabaseClient.ts";
 	import { onMount } from "svelte";
     import { Pencil } from "lucide-svelte";
+    import { Input } from "$lib/components/ui/input";
+    import { sha256 } from "js-sha256";
+	import Account from "$lib/Account.svelte";
 
     export let data;
     let meeting;
     let availabilities;
     let addMode = false;
+    let passwordAuthenticated = false;
+    let passwordIncorrect = false;
+    let meetingPass;
     // let editMode = false;
     // let selectedSlotsEdit = [];
     let selectedAvailability = null;
@@ -209,6 +215,20 @@
         }
     }
 
+    async function checkPassword() {
+        const {data, error} = await supabase
+            .from('Meetings')
+            .select()
+            .match({id: meeting.id, password: sha256(meetingPass)})
+        if(data.length !== 0) {
+            console.log(data);
+            passwordIncorrect = false;
+            passwordAuthenticated = true;
+        } else {
+            passwordIncorrect = true;
+        }
+    }
+
     // function toggleEditMode(){
     //     editMode != editMode;
     //      if(!editMode){
@@ -255,6 +275,24 @@
 <div class="h-screen">
     <Navbar />
     <div class="flex flex-col items-center justify-center gap-y-8 w-full max-w-screen-2xl mx-auto py-32">
+    {#if meeting.password && !passwordAuthenticated}
+        <div class="flex flex-col p-12 h-fit bg-white rounded-2xl shadow-lg justify-center w-3/4">
+            <div class="flex flex-col">
+                <div class="text-2xl font-medium pb-4">
+                    This meeting requires a password.
+                </div>
+                <form on:submit|preventDefault={checkPassword}>
+                    <Input type="password" required placeholder="Password" bind:value={meetingPass} />
+                    {#if passwordIncorrect}
+                        <p class="text-red-600">
+                            The password you entered is incorrect.
+                        </p>
+                    {/if}
+                    <Button type="submit" class="mt-4">Submit</Button>
+                </form>
+            </div>
+        </div>
+    {:else}
         <div class="flex flex-row items-center w-5/6 justify-between">
             <div class="flex flex-col space-y-2 mr-12 w-96">
                 <h1 class="text-4xl font-bold">{meetingName}</h1>
@@ -292,5 +330,6 @@
                 <Button on:click={saveChanges}>Save changes</Button> -->
             </div>
         </div>
+        {/if}
     </div>
 </div>

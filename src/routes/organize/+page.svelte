@@ -13,6 +13,7 @@
     import CircleAlert from "lucide-svelte/icons/alert-circle";
     import * as Alert from "$lib/components/ui/alert/index.ts";
     import { user } from "$lib/userStore.js"
+    import { sha256 } from "js-sha256";
 
     let startTimeHour = 7;
     let startTimePeriod = "AM";
@@ -72,7 +73,7 @@
             .insert([
                 {
                     EventName: formData.meetingName,
-                    password: formData.meetingPassword,
+                    password: formData.meetingPassword ? sha256(formData.meetingPassword) : '',
                     MinTime: formData.startTime,
                     MaxTime: formData.endTime,
                     dates: formData.selectedDates,
