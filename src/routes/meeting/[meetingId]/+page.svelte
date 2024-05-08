@@ -6,15 +6,20 @@
     import Button from "$lib/components/ui/button/button.svelte";
 	import { supabase } from "../../../supabaseClient.ts";
 	import { onMount } from "svelte";
-
+	import { goto } from "$app/navigation";
+    
     export let data;
     let meeting;
     let availabilities;
     let addMode = false;
     let cellColors = [];
     let userInfo;
+    let meetingPass = '';
+    let meetingId;
 
     onMount(async () => {
+        const url = window.location.pathname;
+        meetingId = url.split('/').pop();
         const user = await supabase.auth.getUser();
         let userData = user.data.user;
 
@@ -28,15 +33,62 @@
         } else {
             userInfo = data;
         }
+        fetchMeetingData();
     });
+    async function fetchMeetingData(){
+        try{
+            const { data: meetingData, error: meetingError} = await supabase
+                .from('Meetings')
+                .select('*')
+                .eq('id', meetingId)
+                .single();
 
-    
+            if(meetingError){
+                throw meetingError;
+            }
+            meeting = meetingData;
+            meetingPass = meeting.password;
+            const {data: availabilityData, error: availabilityError } = await supabase
+                .from('Availabilities')
+                .select('*')
+                .eq('meeting_id', meetingId);
+
+            if(availabilityError){
+                throw availabilityError
+            }
+            availabilities = availabilityData;
+            addMode = true;
+                
+    }catch(error){
+        console.error("Error fetching data:", error.message);
+    }
+    }
+    async function validatePassword(){
+        try{
+            if(meeting.pass_required){
+                const enteredPass = window.prompt("This meeting requires a password. Please enter the password:");
+                if(enteredPass !== meetingPass){
+                    alert("Incorrect password");
+                 
+                }else{
+                    fetchMeetingData();
+                }
+            }else{
+                fetchMeetingData();
+            }
+        }catch(error){
+            console.error("Error validating password:", error.message);
+        }
+        
+    }
+
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
         availabilities = data.body.availabilities;
         console.log(meeting);
         console.log(availabilities);
     }
+    
     let meetingName = meeting.EventName;
     let selectedDates = meeting.dates.map((/** @type {string} */ date) => {
         let [year, month, day] = date.split("-").map((/** @type {string} */ datePart) => parseInt(datePart));
@@ -178,7 +230,15 @@
                 {#if addMode}
                     <Button on:click={saveAvailability}>Save</Button>
                 {:else}
-                    <AvailabilityDialog on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
+                    {#if meeting.pass_required}
+                        <div>
+                            <label for="meetingPass">Enter Meeting Password:</label>
+                            <input type="password" id="meetingPass" bind:value={meetingPass} />
+                            <Button on:click={validatePassword}>Submit</Button>
+                        </div>
+                    {:else}
+                        <AvailabilityDialog on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
+                    {/if}
                 {/if}
             </div>
         </div>
