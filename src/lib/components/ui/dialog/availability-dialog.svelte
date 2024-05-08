@@ -11,6 +11,9 @@
     function addAsGuest() {
         dispatch("addAsGuest", {name});
     }
+    function addAsUser() {
+        dispatch("addAsUser");
+    }
 </script>
 
 <Dialog.Root>
@@ -23,7 +26,7 @@
         </Dialog.Header>
         <div class="flex flex-col my-6 justify-center">
             <div>
-                <Button class="w-full">Add as User</Button>
+                <Button on:click={addAsUser} class="w-full">Add as User</Button>
                 <p class="text-center my-6">or</p>
             </div>
             <form class="flex flex-col" on:submit|preventDefault={addAsGuest}>

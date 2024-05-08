@@ -142,6 +142,14 @@
         return slots;
     }
 
+    function convertTo12h(timeString) { // this looked too ugly
+        const [hours, minutes] = timeString.split(':');
+        const numHours = parseInt(hours);
+        const suffix = numHours >= 12 ? 'PM' : 'AM'
+        const newHours = numHours === 0 ? 12 : (numHours > 12 ? numHours - 12 : numHours);
+        return `${newHours}:${minutes}${suffix}`
+    }
+
     /**
      * Given an array of dates and a date, returns true if the date is in the array
      * Uses timestamps to compare dates by value RAHHHH
@@ -182,8 +190,8 @@
                 </div>
                 {#each timeSlots as period, index}
                     {@const cellDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(period.split(':')[0]), parseInt(period.split(':')[1]))}
-                    <button on:mousedown={() => handleMouseDown(cellDate)} on:mouseup={() => handleMouseUp(cellDate)} on:mouseover={() => handleMouseOver(cellDate)} on:focus={() => handleMouseOver(cellDate)} class={`flex flex-row px-4 justify-center cursor-pointer select-none ${index % 2 !== 0 ? 'border-b-2 pb-0' : ''} ${ isCellSelected(cellDate) ? (addMode ? 'bg-blue-200 hover:bg-blue-300' : ` hover:bg-blue-300`) : 'hover:bg-blue-100'} ${hasDate(slotRangeSelection, cellDate) ? 'bg-blue-200' : ''}`}
-                    style="background-color: {cellColors[numberCellSelected(cellDate)]}"
+                    <button on:mousedown={() => handleMouseDown(cellDate)} on:mouseup={() => handleMouseUp(cellDate)} on:mouseover={() => handleMouseOver(cellDate)} on:focus={() => handleMouseOver(cellDate)} class={`flex flex-row px-4 justify-center cursor-pointer select-none ${index % 2 !== 0 ? 'border-b-2' : ''} ${ isCellSelected(cellDate) ? (addMode ? 'bg-blue-200 hover:bg-blue-300' : ` hover:bg-blue-300`) : 'hover:bg-blue-100'} ${hasDate(slotRangeSelection, cellDate) ? 'bg-blue-200' : ''}`}
+                    style="background-color: {cellColors[numberCellSelected(cellDate)]}; border-color: {cellColors[numberCellSelected(cellDate)]};"
                     title="{date.getMonth() + 1}/{date.getDate()} @ {period}">
                         <br/>
                     </button>

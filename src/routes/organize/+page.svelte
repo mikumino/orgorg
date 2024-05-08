@@ -12,6 +12,7 @@
     import Terminal from "lucide-svelte/icons/terminal";
     import CircleAlert from "lucide-svelte/icons/alert-circle";
     import * as Alert from "$lib/components/ui/alert/index.ts";
+    import { user } from "$lib/userStore.js"
 
     let startTimeHour = 7;
     let startTimePeriod = "AM";
@@ -20,6 +21,7 @@
 
     let formData = {
         meetingName: "",
+        meetingPassword: "",
         startTime: "",
         endTime: "",
         selectedDates: []
@@ -33,6 +35,7 @@
     let errors = [];
 
     async function createMeeting() {
+
         // error checking - this solution is rough and doesn't use the error functions or components that we have
         errors = [];
         
@@ -69,9 +72,11 @@
             .insert([
                 {
                     EventName: formData.meetingName,
+                    password: formData.meetingPassword,
                     MinTime: formData.startTime,
                     MaxTime: formData.endTime,
-                    dates: formData.selectedDates
+                    dates: formData.selectedDates,
+                    creator_id: $user ? $user.id: null
                 }
             ])
             .select();
@@ -111,6 +116,10 @@
                     <div class="flex flex-col space-y-4 mb-4 w-96">
                         <Label for="meetingName">Meeting name</Label>
                         <Input type="text" id="meetingName" required bind:value={formData.meetingName}/>
+                    </div>
+                    <div class="flex flex-col space-y-4 mb-4 w-96">
+                        <Label for="meetingPassword">Meeting password (optional)</Label>
+                        <Input type="password" id="meetingPassword" bind:value={formData.meetingPassword}/>
                     </div>
                     <div class="flex flex-col space-y-4 mb-8">
                         <Label for="timeRange">Time range</Label>
