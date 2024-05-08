@@ -3,10 +3,11 @@
     import { user } from "$lib/userStore";
 	import { supabase } from "../supabaseClient";
     import { signOut } from "$lib/userStore";
+    import calendar from "$lib/assets/calendar.png";
 </script>
 
-<div class="flex flex-row h-screen items-center">
-    <div class="flex flex-col ml-24 space-y-6 w-2/3">
+<div class="flex flex-row h-screen mx-auto max-w-screen-xl justify-center items-center">
+    <div class="flex flex-col w-fit space-y-6 mr-28">
         <h1 class="text-6xl font-bold">OrgOrg</h1>
         <h3 class="text-xl">Meeting organization made easy.</h3>
         <div class="flex flex-row space-x-2">
@@ -20,7 +21,5 @@
             {/if}
         </div>
     </div>
-    <div class="flex flex-col bg-slate-200 w-1/3 h-full">
-    
-    </div>
+    <img src={calendar} alt="calendar" class="w-1/3"/>
 </div>

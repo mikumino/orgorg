@@ -13,11 +13,12 @@
     let addMode = false;
     let cellColors = [];
     let userInfo;
+    let hoveredCell = null;
+    let numResponses = 0;
 
     onMount(async () => {
         const user = await supabase.auth.getUser();
         let userData = user.data.user;
-
         const { data, error } = await supabase
             .from('users')
             .select('id, email, username, display_name')
@@ -30,10 +31,18 @@
         }
     });
 
+    $: {
+        if(hoveredCell !== null) {
+            names = availabilities.filter(availability => hasDate(availability.datetimes, hoveredCell)).map(availability => availability.username);
+        } else {
+            names = availabilities.map(availability => availability.username);
+        }
+    }
     
     if ('body' in data && 'meeting' in data.body) {
         meeting = data.body.meeting;
         availabilities = data.body.availabilities;
+        numResponses = availabilities.length;
         console.log(meeting);
         console.log(availabilities);
     }
@@ -55,6 +64,17 @@
     // fetch the saved availabilities and fill in the availability component accordingly
     populateSavedAvailabilities(names);
 
+    /**
+     * Given an array of dates and a date, returns true if the date is in the array
+     * Uses timestamps to compare dates by value RAHHHH
+     * shouldve moved this to a utils file lol ive used this in 3 files now
+	 * @param {{getTime: () => number;}} date
+	 * @param {any[]} array
+	 */
+     function hasDate(array, date) {
+        return array.find(arrayDate => Date.parse(arrayDate) === date.getTime());
+    }
+
     function populateSavedAvailabilities(nameList) {
         getCellColors(nameList);
         availabilities.forEach(function(availability) {
@@ -69,7 +89,7 @@
         let cappedNumResponses = Math.min(nameList.length, 10);
 
         let lightColor = "#dbeafe";
-        let darkColor = "#172554";
+        let darkColor = "#5b70fb";
 
         let step = 1 / cappedNumResponses;
         
@@ -168,7 +188,7 @@
 
 <div class="h-screen">
     <Navbar />
-    <div class="flex flex-col items-center justify-center gap-y-8 w-full max-w-screen-lg mx-auto py-32">
+    <div class="flex flex-col items-center justify-center gap-y-8 w-full max-w-screen-2xl mx-auto py-32">
         <div class="flex flex-row items-center w-5/6 justify-between">
             <div class="flex flex-col space-y-2 mr-12 w-96">
                 <h1 class="text-4xl font-bold">{meetingName}</h1>
@@ -185,11 +205,11 @@
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full min-w-0 grow">
                 {#if names.length > 1}
-                    <AvailabilityLegend cellColors={cellColors} numResponses={names.length} />
+                    <AvailabilityLegend cellColors={cellColors} numResponses={numResponses} />
                 {/if}
                 <div class="flex-row max-h-full overflow-auto">
                     {#key availabilities}
-                        <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
+                        <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} bind:hoveredCell={hoveredCell}/>
                     {/key}
                 </div>
             </div>
