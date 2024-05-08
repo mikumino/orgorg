@@ -10,7 +10,7 @@
     import Timepicker from "$lib/components/ui/timepicker/timepicker.svelte";
 	import { goto } from "$app/navigation";
     import Terminal from "lucide-svelte/icons/terminal";
-    import CircleAlert from "lucide-svelte/icons/circle-alert";
+    import CircleAlert from "lucide-svelte/icons/alert-circle";
     import * as Alert from "$lib/components/ui/alert/index.ts";
 
     let startTimeHour = 7;
