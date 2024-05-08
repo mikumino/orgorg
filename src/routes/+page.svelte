@@ -6,6 +6,10 @@
     import calendar from "$lib/assets/calendar.png";
 </script>
 
+<svelte:head>
+    <title>OrgOrg</title>
+</svelte:head>
+
 <div class="flex flex-row h-screen mx-auto max-w-screen-xl justify-center items-center">
     <div class="flex flex-col w-fit space-y-6 mr-28">
         <h1 class="text-6xl font-bold">OrgOrg</h1>
