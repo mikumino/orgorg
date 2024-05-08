@@ -243,7 +243,7 @@
         </div>
         <div class="flex flex-row gap-x-4 w-5/6 justify-between">
             <div class="flex flex-col basis-full min-w-0 grow">
-                {#if names.length > 1}
+                {#if numResponses > 1}
                     <AvailabilityLegend cellColors={cellColors} numResponses={numResponses} />
                 {/if}
                 <div class="flex-row max-h-full overflow-auto">
