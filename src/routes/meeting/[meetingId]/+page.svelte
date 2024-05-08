@@ -11,6 +11,9 @@
     let meeting;
     let availabilities;
     let addMode = false;
+    let editMode = false;
+    let selectedSlotsEdit = [];
+    let selectedAvailability = null;
     let cellColors = [];
     let userInfo;
 
@@ -159,7 +162,43 @@
         }
     }
 
+    function toggleEditMode(){
+        editMode != editMode;
+         if(!editMode){
+            addMode = false;
+            clearFields();
+         }
+    }
 
+    function selectAvailability(index){
+        editMode = true;
+        selectedAvailability = availabilities[index];
+    }
+
+    async function saveChanges(){
+        if(!selectedAvailability){
+            console.error("No availability selected for editing");
+            return;
+        }
+
+        selectedAvailability.datetimes = availabilitySelectionData.datetimes;
+
+        const { data, error } = await supabase
+            .from('Availabilities')
+            .upsert([selectedAvailability]);
+
+        if(error){
+            console.error("Error saving changes:", error.message);
+
+        }else{
+            console.log("Changes saved successfully");
+            editMode = false;
+            selectedAvailability = null;
+            clearFields();
+
+            refetchAvailabilities();
+        }
+    }
 </script>
 
 <style>
@@ -189,7 +228,9 @@
                 {/if}
                 <div class="flex-row max-h-full overflow-auto">
                     {#key availabilities}
-                        <AvailabilityPicker bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
+                        
+                        <AvailabilityPicker on:click={() => selectAvailability(availabilities)} bind:selectedSlots={availabilitySelectionData.datetimes} selectedDates={selectedDates} startHour={startHour} endHour={endHour} cellColors={cellColors} bind:addMode={addMode} />
+                            
                     {/key}
                 </div>
             </div>
@@ -200,6 +241,8 @@
                     {name}
                 </p>
                 {/each}
+                <Button on:click={toggleEditMode}>Edit Availability</Button>
+                <Button on:click={saveChanges}>Save changes</Button>
             </div>
         </div>
     </div>
