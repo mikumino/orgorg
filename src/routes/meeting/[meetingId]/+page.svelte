@@ -6,6 +6,7 @@
     import Button from "$lib/components/ui/button/button.svelte";
 	import { supabase } from "../../../supabaseClient.ts";
 	import { onMount } from "svelte";
+    import { Pencil } from "lucide-svelte";
 
     export let data;
     let meeting;
@@ -262,8 +263,10 @@
             <div class="flex flex-col">
                 {#if addMode}
                     <Button on:click={saveAvailability}>Save</Button>
-                {:else}
+                {:else if !userInfo}
                     <AvailabilityDialog on:addAsUser={handleUserMode} on:addAsGuest={handleGuestMode}/>
+                {:else}
+                    <Button on:click={handleUserMode}><Pencil class="mr-2 w-4 h-4"></Pencil> Add/Edit as {userInfo.display_name}</Button>
                 {/if}
             </div>
         </div>
