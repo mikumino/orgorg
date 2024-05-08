@@ -7,6 +7,8 @@
     import { Label } from "$lib/components/ui/label";
     import { supabase } from "../../supabaseClient";
     let username, displayName, email, password, confirmPassword;
+    let invalidData = false;
+    let note = "";
 
     async function handleSubmit() {
         if (password !== confirmPassword) {
@@ -20,7 +22,8 @@
         });
 
         if (error) {
-            alert(error.message);
+            invalidData = true;
+            note = "Invalid details. Please try again.";
         } else {
             console.log(data);
             await supabase.from("users").insert([
@@ -31,7 +34,7 @@
                     email: data.user.email,
                 },
             ]);
-            alert("Account created! Please check your email for a verification link.");
+            note = "Account created! Please check your email for a verification link.";
         }
     }
 </script>
@@ -67,6 +70,11 @@
                     <div class="flex flex-row">
                         <Button type="submit">Register</Button>
                     </div>
+                    {#if invalidData}
+                        <p class="text-red-500">{note}</p>
+                        {:else if note}
+                            <p class="text-green-600">{note}</p>
+                    {/if}
                 </div>
             </Card.Content>
             <Card.Footer>
